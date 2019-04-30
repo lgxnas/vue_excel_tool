@@ -1,15 +1,35 @@
 <template>
     <el-row>
-        <el-col :span="6"><div>Xlsx Extend dev by Mr.Li</div></el-col>
+        <el-col :span="12">{{title}}</el-col>
+        <el-col :span="12">{{dw}}</el-col>
     </el-row>
 </template>
+<script>
+export default {
+    data(){
+        return {
 
-<style>
+        }
+    },
+    props:['title','dw']
+}
+</script>
+
+<style scoped>
     .el-row{
-        line-height: 60px;
+        line-height: 40px;
+        font-weight: bold;
+        border-bottom: 1px solid #cccccc;
+        
     }
     .el-col{
         text-align: left;
+        padding-inline-start : 20px;
+    }
+    .el-col:last-child{
+        text-align: right;
+        font-size: 10px !important;
+        padding-inline-end: 50px;
     }
 </style>
 

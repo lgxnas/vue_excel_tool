@@ -1,25 +1,26 @@
 <template>
   <div id="app">
-    <el-container style="height: 100vh; border: 1px solid #eee">
-      <el-aside width="200px">
+    <el-container>
+      <!-- <el-aside> -->
+      <el-aside width="130px">
         <Aside_lgx/>
       </el-aside>
-      <el-container>
-        <el-main>Main</el-main>
-        <el-footer>Footer</el-footer>
+      <el-container id="cright">
+        <el-main>
+          <router-view/>
+        </el-main>
+        <el-footer height="40px">Footer</el-footer>
       </el-container>
     </el-container>
   </div>
 </template>
 
 <script>
-// import Header_lgx from "./components/Header.vue";
-import Aside_lgx from "./components/Aside.vue";
+import Aside_lgx from "./components/Aside.vue"
 
 export default {
   name: "app",
   components: {
-    // Header_lgx,
     Aside_lgx
   }
 };
@@ -35,16 +36,15 @@ export default {
   /* margin-top: 60px; */
 }
 html,
-body {
+body,
+.el-main {
   margin: 0;
-  padding: 0;
+  padding: 0 !important;
 }
-/* .el-header,.el-aside{
-  background-color: rgba(47, 53, 66,1.0);
-  color:white;
-  font-weight: bold;
-} */
-.el-container{
-
+.el-main{
+  max-height: 100%;
+}
+#cright{
+  max-height: 100vh;
 }
 </style>
