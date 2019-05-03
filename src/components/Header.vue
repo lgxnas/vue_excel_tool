@@ -1,7 +1,8 @@
 <template>
     <el-row>
-        <el-col :span="12">{{title}}</el-col>
-        <el-col :span="12">{{dw}}</el-col>
+        <el-col :span="8">{{title}}</el-col>
+        <el-col :span="8">{{dw}}</el-col>
+		<el-col :span="8"></el-col>
     </el-row>
 </template>
 <script>
@@ -26,7 +27,7 @@ export default {
         text-align: left;
         padding-inline-start : 20px;
     }
-    .el-col:last-child{
+    .el-col:nth-child(2){
         text-align: right;
         font-size: 10px !important;
         padding-inline-end: 50px;
