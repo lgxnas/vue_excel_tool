@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Header :title="title" :dw="dw"/>
+    <Header :title="title" :dw="dw" :dspy="dspy"/>
     <Eltable :ths="ths" :tableData="dxs"/>
   </div>
 </template>
@@ -269,8 +269,9 @@ export default {
     return {
       title: "地下水标准 (GB/T14848-2017)",
       // tableData,
-      dw: "单位:mg/L",
+      dw: "单位:总大肠菌群:MPN/100mL、水温:℃、pH:无量纲、其它:mg/L",
       dxs,
+      dspy:{display:'none'},
       ths: [
         { prop: "name", label: "名称" },
         { prop: "1", label: "一类" },

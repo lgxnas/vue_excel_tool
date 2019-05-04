@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { Container, Aside, Main, Footer, Header, Row, Col, Menu, Submenu, MenuItem, Table, TableColumn } from 'element-ui'
+import { Container, Aside, Main, Footer, Header, Row, Col, Menu, Submenu, MenuItem, Table, TableColumn, Upload, Button } from 'element-ui'
 // import 'element-ui/lib/theme-chalk/index.css'
 
 Vue.use(Footer)
@@ -16,3 +16,6 @@ Vue.use(MenuItem)
 // tabel
 Vue.use(Table)
 Vue.use(TableColumn)
+//upload
+Vue.use(Upload)
+Vue.use(Button)

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Header :title="title" :dw="dw"/>
+    <Header :title="title" :dw="dw" :dspy="dspy"/>
     <Eltable :ths="ths" :tableData="dbs" />
   </div>
 </template>
@@ -162,8 +162,9 @@ export default {
     return {    
       title: "地表水标准 (GB3838-2002)",
       // tableData,
-      dw:"单位:mg/L",
+      dw:'单位:粪大肠菌群:个/L、水温:℃、pH:无量纲、其它:mg/L',
       dbs,
+      dspy:{display:'none'},
       ths: [
         { prop: "name", label: "名称" },
         { prop: "1", label: "一类" },
