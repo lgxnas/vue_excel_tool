@@ -11,7 +11,7 @@
 </template>
 <script>
 import XLSX from "xlsx";
-import { constants } from 'crypto';
+// import { constants } from 'crypto';
 export default {
   data() {
     return {
@@ -63,7 +63,7 @@ this.$emit('transferJson',this.dbjson)
 .el-col:nth-child(2) {
   text-align: right;
   font-size: 10px !important;
-  padding-inline-end: 50px;
+  /* padding-inline-end: 50px; */
 }
 el-col:last-child {
   text-align: right;
