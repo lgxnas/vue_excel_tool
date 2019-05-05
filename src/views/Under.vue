@@ -23,7 +23,7 @@ export default {
   data() {
     return {
       title: "地下水分析",
-      dxsjson: [],
+      dxsjson: '',
       result: [],
       dw: "单位:总大肠菌群:MPN/100mL、水温:℃、pH:无量纲、其它:mg/L"
     };
@@ -31,9 +31,12 @@ export default {
   components: { Header },
   methods: {
     getJson(msg) {
-      this.dxsjson = msg;
-      // this.result = analyse_dxs(msg);
-      console.log(this.dxsjson);
+      // this.dxsjson = msg;
+      this.result = analyse_dxs(msg);
+
+			// this.dxsjson=msg[0][xm[0]]
+      // console.log(xm);
+			
     }
   }
 };
