@@ -7,7 +7,7 @@
 </template>
 <script>
 import Header from "../components/Header"
-import {test} from './lgx.js'
+// import {test} from './lgx.js'
 export default {
    data(){
       return {title:"地表水分析",
@@ -18,7 +18,7 @@ export default {
    components:{Header},
    methods:{
       lgx(){
-         this.t=test(1,2)
+         // this.t=test(1,2)
 
       }
    }

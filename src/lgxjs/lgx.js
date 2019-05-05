@@ -3,67 +3,150 @@
 //result格式
 //[{add:"安福镇",name:"安福镇安福村5社",level:"Ⅳ",des:"耗氧量(Ⅳ,超标0.37倍);总大肠菌群超标(Ⅴ,超标799.00倍);"}]
 //地下水2-4类标准值
-const dxs=[
-    {"总硬度 ":"300","硫酸盐 ":"150","氯化物 ":"150","铁 ":"0.2","锰 ":"0.05","铜 ":"0.05","锌 ":"0.5","挥发酚 ":"0.001","阴离子表面活性剂 ":"0.1","耗氧量":"2","硝酸盐 ":"5","亚硝酸盐 ":"0.1","氨氮 ":"0.1","氟化物 ":"1","氰化物 ":"0.01","汞 ":"0.0001","砷 ":"0.001","硒 ":"0.01","镉 ":"0.001","六价铬 ":"0.01","铅 ":"0.005","总大肠菌群 ":"3"},
-    {"总硬度 ":"450","硫酸盐 ":"250","氯化物 ":"250","铁 ":"0.3","锰 ":"0.1","铜 ":"1","锌 ":"1","挥发酚 ":"0.002","阴离子表面活性剂 ":"0.3","耗氧量":"3","硝酸盐 ":"20","亚硝酸盐 ":"1","氨氮 ":"0.5","氟化物 ":"1","氰化物 ":"0.05","汞 ":"0.001","砷 ":"0.01","硒 ":"0.01","镉 ":"0.005","六价铬 ":"0.05","铅 ":"0.01","总大肠菌群 ":"3"},
-    {"总硬度 ":"650","硫酸盐 ":"350","氯化物 ":"350","铁 ":"2","锰 ":"1.5","铜 ":"1.5","锌 ":"5","挥发酚 ":"0.01","阴离子表面活性剂 ":"0.3","耗氧量":"10","硝酸盐 ":"30","亚硝酸盐 ":"4.8","氨氮 ":"1.5","氟化物 ":"2","氰化物 ":"0.1","汞 ":"0.002","砷 ":"0.05","硒 ":"0.1","镉 ":"0.01","六价铬 ":"0.1","铅 ":"0.1","总大肠菌群 ":"100"}
-    ];//2 3 4 类
-const dbs=[];
-function str2float(str){
-	return parseFloat(str.replace(/\D/,""));
+const dxs = [{
+        "总硬度 ": "300",
+        "硫酸盐 ": "150",
+        "氯化物 ": "150",
+        "铁 ": "0.2",
+        "锰 ": "0.05",
+        "铜 ": "0.05",
+        "锌 ": "0.5",
+        "挥发酚 ": "0.001",
+        "阴离子表面活性剂 ": "0.1",
+        "耗氧量": "2",
+        "硝酸盐 ": "5",
+        "亚硝酸盐 ": "0.1",
+        "氨氮 ": "0.1",
+        "氟化物 ": "1",
+        "氰化物 ": "0.01",
+        "汞 ": "0.0001",
+        "砷 ": "0.001",
+        "硒 ": "0.01",
+        "镉 ": "0.001",
+        "六价铬 ": "0.01",
+        "铅 ": "0.005",
+        "总大肠菌群 ": "3"
+    },
+    {
+        "总硬度 ": "450",
+        "硫酸盐 ": "250",
+        "氯化物 ": "250",
+        "铁 ": "0.3",
+        "锰 ": "0.1",
+        "铜 ": "1",
+        "锌 ": "1",
+        "挥发酚 ": "0.002",
+        "阴离子表面活性剂 ": "0.3",
+        "耗氧量": "3",
+        "硝酸盐 ": "20",
+        "亚硝酸盐 ": "1",
+        "氨氮 ": "0.5",
+        "氟化物 ": "1",
+        "氰化物 ": "0.05",
+        "汞 ": "0.001",
+        "砷 ": "0.01",
+        "硒 ": "0.01",
+        "镉 ": "0.005",
+        "六价铬 ": "0.05",
+        "铅 ": "0.01",
+        "总大肠菌群 ": "3"
+    },
+    {
+        "总硬度 ": "650",
+        "硫酸盐 ": "350",
+        "氯化物 ": "350",
+        "铁 ": "2",
+        "锰 ": "1.5",
+        "铜 ": "1.5",
+        "锌 ": "5",
+        "挥发酚 ": "0.01",
+        "阴离子表面活性剂 ": "0.3",
+        "耗氧量": "10",
+        "硝酸盐 ": "30",
+        "亚硝酸盐 ": "4.8",
+        "氨氮 ": "1.5",
+        "氟化物 ": "2",
+        "氰化物 ": "0.1",
+        "汞 ": "0.002",
+        "砷 ": "0.05",
+        "硒 ": "0.1",
+        "镉 ": "0.01",
+        "六价铬 ": "0.1",
+        "铅 ": "0.1",
+        "总大肠菌群 ": "100"
+    }
+]; //2 3 4 类
+const dbs = [];
+
+function analyse_value(key, value) { //value v3 number float 返回超标倍数
+    let v3 = dxs[1][key];
+    // console.log(key,value,v3)
+    let bs = 0;
+    let level = "";
+    if (value > v3) {
+        let tmpbs = (value - v3) / v3;
+        bs = tmpbs.toFixed(2);
+        console.log(key, value, v3, bs)
+        if (value > dxs[2][key]) {
+            level = "Ⅴ";
+        } else {
+            level = "Ⅳ";
+        }
+    }
+    return {
+        lva: level,
+        bs: bs
+    };
 }
-function setLevel(s){
-	let arr=["Ⅱ","Ⅲ","Ⅳ","Ⅴ"];
-	return arr[s];
-}
-function desInit(xm,s,va,v3){ //xm 项目名，s实测类别 2345类,va测量值,v3 3类标准值
-	let str='';
-	let bs=(va-v3)/v3;
-	str=xm+'('+setLevel(s)+",超标"+bs.toFixed(2)+"倍);";
-	return str;
-}
-function analyse_dxs(dxsjson){
-    let result=[];
-    
-	let xm=[];
-	for (let key in dxsjson[0]){
-		xm.push(key);
-	}
-	console.log(typeof(dxsjson[0][xm[5]]),dxsjson[0][xm[5]])
-    for(let i=0;i<dxsjson.length;i++){ //所有点位
-		let str_des=''; //超标项目详细
-		let level=[]; //[3,2,4,5]实测类别数字
-		for(let cl=3;cl<xm.length;cl++){ //所有项目
-			let v=dxsjson[i][xm[cl]]; //测量值 字符串和数字
-			let va=0;
-			// if(v.indexOf("L")==-1){ //未检出
-				if(typeof(v)==="string"){
-					va=str2float(v); //测量值 浮点数
-				}else{
-					va=v;
-				}
-				for (let s=0;s<dxs.length;s++){ //2类标准开始
-					let vs=str2float(dxs[s][xm[cl]]); //xm[cl]标准的key,vs标准的值
-					if(va<vs){
-						level.push(s+2);
-						if(s>1){
-							let v3=str2float(dxs[1][xm[cl]]); //3类标准值
-							str_des=str_des+desInit(xm[cl],s,va,v3);
-							let obj={
-								add:dxsjson[i][xm[0]],
-								name:dxsjson[i][xm[1]],
-								level:level.sort((a,b)=>{return b-a})[0],
-								des:str_des
-							};
-							result.push(obj);
-							break;
-						}
-					}
-				}
-			// }
-		}
-	}
-	console.log(dxsjson[0][xm[0]])
+
+function analyse_obj(obj) {
+    let arrKey = [];
+    let strDes = "";
+    let lvobj = "";
+    for (let key in obj) {
+        arrKey.push(key);
+    }
+    for (let i = 3; i < arrKey.length; i++) { //
+        let v = obj[arrKey[i]]; //测量值 字符串和数字
+        let va = 0;
+        if (typeof (v) == "string") { //测量值 
+            va = parseFloat(v.replace(/[L|\<|≥|\s]/, "")); //转float
+            // console.log(obj[arrKey[i]],va)
+        } else {
+            va = v;
+        }
+        let objV = analyse_value(arrKey[i], va);
+        if (objV.bs > 0) {
+            strDes = strDes + arrKey[i] + "(" + objV.lva + ",超标" + objV.bs + "倍);"
+        }
+    }
+    // console.log(strDes)
+    if (strDes.length > 0) {
+        if (strDes.indexOf("Ⅴ") != -1) { //找到5类水标志
+            lvobj = "Ⅴ";
+        } else {
+            lvobj = "Ⅳ";
+        }
+        return {
+            add: obj[arrKey[0]],
+            name: obj[arrKey[1]],
+            level: lvobj,
+            des: strDes
+        }
+    }
+};
+
+function analyse_dxs(dxsjson) {
+    let result = [];
+    for (let i = 0; i < dxsjson.length; i++) {
+        let obj = analyse_obj(dxsjson[i]);
+        // console.log(obj)
+        if (!obj) {
+            // console.log(obj);
+        } else {
+            result.push(obj);
+        }
+    }
     return result;
 };
 export {
