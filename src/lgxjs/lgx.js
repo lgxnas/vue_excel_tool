@@ -77,16 +77,16 @@ const dxs = [{
     }
 ]; //2 3 4 类
 const dbs = [];
-
-function analyse_value(key, value) { //value v3 number float 返回超标倍数
-    let v3 = dxs[1][key];
+//单项目评价 返回等级和超标倍数
+function analyse_value(key, value) { //value：测量值 v3：3类标准值 number float bs:返回超标倍数 lva:等级
+    let v3 = dxs[1][key]; //3类标准值
     // console.log(key,value,v3)
     let bs = 0;
     let level = "";
     if (value > v3) {
-        let tmpbs = (value - v3) / v3;
-        bs = tmpbs.toFixed(2);
-        console.log(key, value, v3, bs)
+        let tmpbs = Math.abs(value - v3) / v3;
+        bs = tmpbs.toFixed(2); //toFixed 4舍6入
+        // console.log(key, value, v3, bs)
         if (value > dxs[2][key]) {
             level = "Ⅴ";
         } else {
@@ -98,26 +98,34 @@ function analyse_value(key, value) { //value v3 number float 返回超标倍数
         bs: bs
     };
 }
-
-function analyse_obj(obj) {
+//规范取值 转Float
+function toFloat(value){
+	let valFloat=0;
+	if (typeof (value) == "string") { //测量值 
+	    valFloat = parseFloat(value.replace(/[L|\<|≥|\s]/, "")); //转float
+	    // console.log(obj[arrKey[i]],valFloat)
+	} else {
+	    valFloat = value;
+	}
+	return valFloat;
+}
+//地下水tmp
+function analyse_dxsobj(obj) {
     let arrKey = [];
     let strDes = "";
     let lvobj = "";
     for (let key in obj) {
         arrKey.push(key);
     }
-    for (let i = 3; i < arrKey.length; i++) { //
+	//pH
+	// let ph=obj[arrKey[2]];
+	//pH之后
+    for (let i = 3; i < arrKey.length; i++) { //未分析pH
         let v = obj[arrKey[i]]; //测量值 字符串和数字
-        let va = 0;
-        if (typeof (v) == "string") { //测量值 
-            va = parseFloat(v.replace(/[L|\<|≥|\s]/, "")); //转float
-            // console.log(obj[arrKey[i]],va)
-        } else {
-            va = v;
-        }
+        let va = toFloat(v); //规范测值 转Float
         let objV = analyse_value(arrKey[i], va);
         if (objV.bs > 0) {
-            strDes = strDes + arrKey[i] + "(" + objV.lva + ",超标" + objV.bs + "倍);"
+            strDes = strDes + arrKey[i] + "(" + objV.lva + ",超标" + objV.bs + "倍);" //设置超标信息
         }
     }
     // console.log(strDes)
@@ -139,7 +147,7 @@ function analyse_obj(obj) {
 function analyse_dxs(dxsjson) {
     let result = [];
     for (let i = 0; i < dxsjson.length; i++) {
-        let obj = analyse_obj(dxsjson[i]);
+        let obj = analyse_dxsobj(dxsjson[i]);
         // console.log(obj)
         if (!obj) {
             // console.log(obj);

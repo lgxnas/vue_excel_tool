@@ -4,12 +4,13 @@
       <span class="title">Mr.Li</span>
     </router-link>
     <el-menu
-      :default-openeds="['s']"
-      default-active="ssurface"
+      :default-openeds="['a']"
+
       background-color="#130f40"
       text-color="#fff"
       active-text-color="#ffd04b"
     >
+		      <!-- default-active="ssurface" -->
       <template v-for="ml in menulist">
         <el-submenu v-if="ml.children" :index="ml.path" :key="ml.path">
           <template slot="title">{{ml.name}}</template>
