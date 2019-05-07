@@ -1,23 +1,29 @@
 <template>
   <div class="aside">
-    <router-link to='/home'>
+    <router-link to="/home">
       <span class="title">Mr.Li</span>
     </router-link>
     <el-menu
-      :default-openeds="['a']"
-
+      :default-openeds="['r']"
       background-color="#130f40"
       text-color="#fff"
       active-text-color="#ffd04b"
     >
-		      <!-- default-active="ssurface" -->
+      <!-- default-active="ssurface" -->
       <template v-for="ml in menulist">
-        <el-submenu v-if="ml.children" :index="ml.path" :key="ml.path">
-          <template slot="title">{{ml.name}}</template>
-          <router-link v-for="(cml,cindex) in ml.children" :to="cml.path" :key="cindex">
-            <el-menu-item :index="cml.path">{{cml.name}}</el-menu-item>
+        <template v-if="ml.children">
+          <el-submenu :index="ml.path" :key="ml.path">
+            <template slot="title">{{ml.name}}</template>
+            <router-link v-for="(cml,cindex) in ml.children" :to="cml.path" :key="cindex">
+              <el-menu-item :index="cml.path">{{cml.name}}</el-menu-item>
+            </router-link>
+          </el-submenu>
+        </template>
+        <template v-else>
+          <router-link :to="ml.path" :key="ml.path">
+            <el-menu-item :index="ml.path">{{ml.name}}</el-menu-item>
           </router-link>
-        </el-submenu>
+        </template>
       </template>
     </el-menu>
   </div>
@@ -37,12 +43,16 @@ export default {
           ]
         },
         {
-          name: "数据分析",
+          name: "饮用水",
           path: "a",
           children: [
             { name: "地表水", path: "surface" },
             { name: "地下水", path: "under" }
           ]
+        },
+        {
+          name: "断面监测",
+          path: "r"
         }
       ]
     };

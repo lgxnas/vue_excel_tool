@@ -5,6 +5,7 @@ import Sunder from '../views/Sunder.vue'
 import Surface from '../views/Surface.vue'
 import Under from '../views/Under.vue'
 import Home from '../views/Home.vue'
+import River from '../views/River.vue'
 
 Vue.use(VueRouter)
 
@@ -31,6 +32,11 @@ const routes = [{
     path: '/under',
     name: 'under',
     component: Under
+  },
+  {
+    path: '/r',
+    name: 'river',
+    component: River
   },
   {
     path: '/*',
