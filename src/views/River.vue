@@ -1,77 +1,368 @@
 <template>
   <div id="river">
-    <el-table :data="dm" border stripe>
+    <Header :title="title" :dw="dw" @transferJson="getJson"/>
+    <el-table :data="dm" border stripe @cell-dblclick="dbck">
       <template v-for="(th,index) in ths">
-        <el-table-column :prop="th.prop" :label="th.label" :key="index">
-          <template scope="scope">
-            <div @dblclick="dbc(scope.$index,th.prop)" style="min-width:100%;min-height:100%;">
-              <div v-show="!scope.row.is_edit[th.prop]">
-                <!-- <span> -->
-                {{scope.row[th.prop]}}
-                <!-- </span> -->
-              </div>
-              <el-input
-                v-show="scope.row.is_edit[th.prop]"
-                v-model="scope.row[th.prop]"
-                @blur="update(scope.$index,th.prop)"
-                autofocus="true"
-                clearable
-                size="mini"
-                minlength="1"
-              ></el-input>
-            </div>
+        <el-table-column :prop="th.prop" :label="th.label" :key="index" align="center" :width="index<33?'65':'200'">
+          <template slot-scope="scope">
+            <el-input
+              type="textarea"
+              @focus="onfocus"
+              v-model="scope.row[th.prop]"
+              @blur="update(scope.$index,th.prop)"
+              size="mini"
+              autosize 
+            ></el-input>
           </template>
         </el-table-column>
       </template>
     </el-table>
-    {{dm}}
+    <p>{{bz}}</p>
+    <!-- {{dm}} -->
   </div>
 </template>
 
 <script>
+import Header from "../components/Header";
 import { constants } from "crypto";
 export default {
   data() {
     return {
+      title: "河流断面分析",
+      // tableData,
+      dw: "单位:粪大肠菌群:个/L、水温:℃、pH:无量纲、其它:mg/L",
+      bz:
+        '备注：①河流评价参照《地表水环境质量标准》（GB3838-2002)、环办[2011]22号文件；②未开展监测填报“-1”；项目未检出填报“检出限+L"；③若项目未检出，计算平均值时取检出限的一半进行计算；④若上下游均未检出，计算“双方均值”那一栏请填报“下游监测站的检出',
       ths: [
-        { prop: "col1", label: "列1" },
-        { prop: "col2", label: "列2" },
-        { prop: "col3", label: "列3" },
-        { prop: "col4", label: "列4" }
+        { prop: "河流名称", label: "河流名称" },
+        { prop: "断面名称", label: "断面名称" },
+        { prop: "交界县名称", label: "交界县名称" },
+        { prop: "测站名称", label: "测站名称" },
+        { prop: "年", label: "年" },
+        { prop: "月", label: "月" },
+        { prop: "日", label: "日" },
+        { prop: "水温", label: "水温" },
+        { prop: "PH", label: "PH" },
+        { prop: "溶解氧", label: "溶解氧" },
+        { prop: "高锰酸盐指数", label: "高锰酸盐指数" },
+        { prop: "五日生化需氧量", label: "五日生化需氧量" },
+        { prop: "氨氮", label: "氨氮" },
+        { prop: "化学需氧量", label: "化学需氧量" },
+        { prop: "挥发酚", label: "挥发酚" },
+        { prop: "氰化物", label: "氰化物" },
+        { prop: "砷", label: "砷" },
+        { prop: "汞", label: "汞" },
+        { prop: "六价铬", label: "六价铬" },
+        { prop: "铅", label: "铅" },
+        { prop: "镉", label: "镉" },
+        { prop: "石油类", label: "石油类" },
+        { prop: "总磷", label: "总磷" },
+        { prop: "总氮", label: "总氮" },
+        { prop: "铜", label: "铜" },
+        { prop: "锌", label: "锌" },
+        { prop: "氟化物", label: "氟化物" },
+        { prop: "硒", label: "硒" },
+        { prop: "阴离子表面活性剂", label: "阴离子表面活性剂" },
+        { prop: "硫化物", label: "硫化物" },
+        { prop: "粪大肠杆菌群", label: "粪大肠杆菌群" },
+        { prop: "规定类别", label: "规定类别" },
+        { prop: "实测类别", label: "实测类别" },
+        {
+          prop: "21项参评指标中超标项目（达到类别,超标倍数）",
+          label: "21项参评指标中超标项目（达到类别,超标倍数）"
+        },
+        {
+          prop: "单独评价指标（粪大肠菌群）超标情况(类别，超标倍数）",
+          label: "单独评价指标（粪大肠菌群）超标情况(类别，超标倍数）"
+        }
       ],
       dm: [
         {
-          col1: "r1c1",
-          col2: "r1c2",
-          col3: "r1c3",
-          col4: "r1c4",
-          is_edit: { col1: false, col2: false, col3: false, col4: false }
+          河流名称: "龙滩河",
+          断面名称: "晏家乡入境断面（中）",
+          交界县名称: "西充→嘉陵",
+          测站名称: "西充县监测站",
+          年: "2019",
+          月: "1",
+          日: "1",
+          水温: "-1",
+          PH: "-1",
+          溶解氧: "-1",
+          高锰酸盐指数: "-1",
+          五日生化需氧量: "-1",
+          氨氮: "-1",
+          化学需氧量: "-1",
+          挥发酚: "-1",
+          氰化物: "-1",
+          砷: "-1",
+          汞: "-1",
+          六价铬: "-1",
+          铅: "-1",
+          镉: "-1",
+          石油类: "-1",
+          总磷: "-1",
+          总氮: "-1",
+          铜: "-1",
+          锌: "-1",
+          氟化物: "-1",
+          硒: "-1",
+          阴离子表面活性剂: "-1",
+          硫化物: "-1",
+          粪大肠杆菌群: "-1",
+          规定类别: "Ⅲ",
+          实测类别: "-1",
+          "21项参评指标中超标项目（达到类别,超标倍数）": "/",
+          "单独评价指标（粪大肠菌群）超标情况(类别，超标倍数）": "/"
         },
         {
-          col1: "r2c1",
-          col2: "r2c2",
-          col3: "r2c3",
-          col4: "r2c4",
-          is_edit: { col1: false, col2: false, col3: false, col4: false }
+          河流名称: "龙滩河",
+          断面名称: "晏家乡入境断面（中）",
+          交界县名称: "西充→嘉陵",
+          测站名称: "嘉陵区监测站",
+          年: "2019",
+          月: "1",
+          日: "1",
+          水温: "-1",
+          PH: "-1",
+          溶解氧: "-1",
+          高锰酸盐指数: "-1",
+          五日生化需氧量: "-1",
+          氨氮: "-1",
+          化学需氧量: "-1",
+          挥发酚: "-1",
+          氰化物: "-1",
+          砷: "-1",
+          汞: "-1",
+          六价铬: "-1",
+          铅: "-1",
+          镉: "-1",
+          石油类: "-1",
+          总磷: "-1",
+          总氮: "-1",
+          铜: "-1",
+          锌: "-1",
+          氟化物: "-1",
+          硒: "-1",
+          阴离子表面活性剂: "-1",
+          硫化物: "-1",
+          粪大肠杆菌群: "-1",
+          规定类别: "Ⅲ",
+          实测类别: "-1",
+          "21项参评指标中超标项目（达到类别,超标倍数）": "/",
+          "单独评价指标（粪大肠菌群）超标情况(类别，超标倍数）": "/"
+        },
+        {
+          河流名称: "龙滩河",
+          断面名称: "晏家乡入境断面（中）",
+          交界县名称: "西充→嘉陵",
+          测站名称: "嘉陵站、西充站监测数据均值",
+          年: "2019",
+          月: "1",
+          日: "1",
+          水温: "-1",
+          PH: "-1",
+          溶解氧: "-1",
+          高锰酸盐指数: "-1",
+          五日生化需氧量: "-1",
+          氨氮: "-1",
+          化学需氧量: "-1",
+          挥发酚: "-1",
+          氰化物: "-1",
+          砷: "-1",
+          汞: "-1",
+          六价铬: "-1",
+          铅: "-1",
+          镉: "-1",
+          石油类: "-1",
+          总磷: "-1",
+          总氮: "-1",
+          铜: "-1",
+          锌: "-1",
+          氟化物: "-1",
+          硒: "-1",
+          阴离子表面活性剂: "-1",
+          硫化物: "-1",
+          粪大肠杆菌群: "-1",
+          规定类别: "Ⅲ",
+          实测类别: "-1",
+          "21项参评指标中超标项目（达到类别,超标倍数）": "/",
+          "单独评价指标（粪大肠菌群）超标情况(类别，超标倍数）": "/"
+        },
+        {
+          河流名称: "虹溪河",
+          断面名称: "莲池乡出境断面（中）",
+          交界县名称: "西充→嘉陵",
+          测站名称: "西充县监测站",
+          年: "2019",
+          月: "1",
+          日: "1",
+          水温: "-1",
+          PH: "-1",
+          溶解氧: "-1",
+          高锰酸盐指数: "-1",
+          五日生化需氧量: "-1",
+          氨氮: "-1",
+          化学需氧量: "-1",
+          挥发酚: "-1",
+          氰化物: "-1",
+          砷: "-1",
+          汞: "-1",
+          六价铬: "-1",
+          铅: "-1",
+          镉: "-1",
+          石油类: "-1",
+          总磷: "-1",
+          总氮: "-1",
+          铜: "-1",
+          锌: "-1",
+          氟化物: "-1",
+          硒: "-1",
+          阴离子表面活性剂: "-1",
+          硫化物: "-1",
+          粪大肠杆菌群: "-1",
+          规定类别: "Ⅲ",
+          实测类别: "-1",
+          "21项参评指标中超标项目（达到类别,超标倍数）": "/",
+          "单独评价指标（粪大肠菌群）超标情况(类别，超标倍数）": "/"
+        },
+        {
+          河流名称: "虹溪河",
+          断面名称: "莲池乡出境断面（中）",
+          交界县名称: "西充→嘉陵",
+          测站名称: "嘉陵区监测站",
+          年: "2019",
+          月: "1",
+          日: "1",
+          水温: "-1",
+          PH: "-1",
+          溶解氧: "-1",
+          高锰酸盐指数: "-1",
+          五日生化需氧量: "-1",
+          氨氮: "-1",
+          化学需氧量: "-1",
+          挥发酚: "-1",
+          氰化物: "-1",
+          砷: "-1",
+          汞: "-1",
+          六价铬: "-1",
+          铅: "-1",
+          镉: "-1",
+          石油类: "-1",
+          总磷: "-1",
+          总氮: "-1",
+          铜: "-1",
+          锌: "-1",
+          氟化物: "-1",
+          硒: "-1",
+          阴离子表面活性剂: "-1",
+          硫化物: "-1",
+          粪大肠杆菌群: "-1",
+          规定类别: "Ⅲ",
+          实测类别: "-1",
+          "21项参评指标中超标项目（达到类别,超标倍数）": "/",
+          "单独评价指标（粪大肠菌群）超标情况(类别，超标倍数）": "/"
+        },
+        {
+          河流名称: "虹溪河",
+          断面名称: "莲池乡出境断面（中）",
+          交界县名称: "西充→嘉陵",
+          测站名称: "嘉陵站、西充站监测数据均值",
+          年: "2019",
+          月: "1",
+          日: "1",
+          水温: "-1",
+          PH: "-1",
+          溶解氧: "-1",
+          高锰酸盐指数: "-1",
+          五日生化需氧量: "-1",
+          氨氮: "-1",
+          化学需氧量: "-1",
+          挥发酚: "-1",
+          氰化物: "-1",
+          砷: "-1",
+          汞: "-1",
+          六价铬: "-1",
+          铅: "-1",
+          镉: "-1",
+          石油类: "-1",
+          总磷: "-1",
+          总氮: "-1",
+          铜: "-1",
+          锌: "-1",
+          氟化物: "-1",
+          硒: "-1",
+          阴离子表面活性剂: "-1",
+          硫化物: "-1",
+          粪大肠杆菌群: "-1",
+          规定类别: "Ⅲ",
+          实测类别: "-1",
+          "21项参评指标中超标项目（达到类别,超标倍数）": "/",
+          "单独评价指标（粪大肠菌群）超标情况(类别，超标倍数）": "/"
         }
       ]
     };
   },
   methods: {
-    dbc(index, p) {
-      console.log(this.dm[index].is_edit);
-      console.log(p);
-      this.dm[index].is_edit[p] = true;
-    },
     update(index, p) {
-      //   console.log(this.dm[index].is_edit[p]);
-      if (this.dm[index][p].replace(/\s/, "").length > 0) {
-        this.dm[index].is_edit[p] = false;
+      // console.log(!this.dm[index][p]);
+      if (!this.dm[index][p]) {
+        this.dm[index][p] = "-1";
       } else {
-        this.dm[index][p] = -1;
-        this.dm[index].is_edit[p] = false;
+        if (this.dm[index][p].replace(/\s/g, "").length == 0) {
+          this.dm[index][p] = "-1";
+        }
+      }
+    },
+    onfocus(e) {
+      e.currentTarget.select(); //全选 文字
+    },
+    dbck(row, column, cell, event) {
+      console.log(row, column, cell, event);
+    },
+    getJson(msg){
+      this.dm=msg
+    },
+    initData() {
+      for (let i = 0; i < this.dm.length; i++) {
+        for (let p = 0; p < this.ths.length; p++) {
+          if (typeof this.dm[i][p] === "undefined") {
+            this.dm[i][this.ths[p].prop] = "-1";
+            console.log(typeof this.dm[i][p]);
+          }
+        }
       }
     }
+  },
+
+  components: {
+    Header
+  },
+  mounted() {
+    // this.initData();
   }
 };
 </script>
+
+<style>
+.el-table thead {
+  color: #000000;
+}
+#river .el-textarea__inner {
+  border: none;
+  background: none;
+  /* height: auto; */
+  color: #000000;
+  padding: 0;
+  text-align: center;
+  resize: none;
+  overflow: hidden;
+  word-break: break-all;
+}
+#river .el-textarea__inner:focus {
+  background-color: rgba(255, 159, 243, 0.2);
+  border: 1px dashed #cccccc;
+}
+#river p{
+  text-align: left;
+}
+</style>

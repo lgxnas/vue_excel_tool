@@ -3,7 +3,13 @@
     <el-col :span="8">{{title}}</el-col>
     <el-col :span="10">{{dw}}</el-col>
     <el-col :span="6" :style="dspy">
-      <el-upload ref="upload" action="/" :show-file-list="false" :on-change="readExcel" :auto-upload="false">
+      <el-upload
+        ref="upload"
+        action="/"
+        :show-file-list="false"
+        :on-change="readExcel"
+        :auto-upload="false"
+      >
         <el-button slot="trigger" icon="el-icon-upload" size="small" type="primary">导入excel</el-button>
       </el-upload>
     </el-col>
@@ -36,8 +42,8 @@ export default {
           this.dbjson = XLSX.utils.sheet_to_json(
             workbook.Sheets[workbook.SheetNames[0]]
           );
-          console.log(this.dbjson)
-this.$emit('transferJson',this.dbjson)
+          console.log(this.dbjson);
+          this.$emit("transferJson", this.dbjson);
         } catch (e) {
           this.$message.warning("文件类型不正确！");
           return false;

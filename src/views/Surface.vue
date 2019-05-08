@@ -3,6 +3,7 @@
    <Header :title="title" :dw="dw"/>
    {{t}}
    <button @click="lgx">test</button>
+   <el-input></el-input>
    </div>
 </template>
 <script>
