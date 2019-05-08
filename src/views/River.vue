@@ -25,6 +25,7 @@
 <script>
 import Header from "../components/Header";
 import { constants } from "crypto";
+import { checkdbsValue } from '../lgxjs/lgx';
 export default {
   data() {
     return {
@@ -310,6 +311,9 @@ export default {
       } else {
         if (this.dm[index][p].replace(/\s/g, "").length == 0) {
           this.dm[index][p] = "-1";
+        }else{
+          let tmp=checkdbsValue(p,this.dm[index][p])
+          this.bz=tmp.key+"类别："+tmp.level+"超标倍数"+tmp.bs
         }
       }
     },
@@ -337,9 +341,6 @@ export default {
   components: {
     Header
   },
-  mounted() {
-    // this.initData();
-  }
 };
 </script>
 
