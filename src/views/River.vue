@@ -25,6 +25,7 @@
     </el-table>
     <p>{{bz}}</p>
     <!-- {{dm}} -->
+    {{dataCate}}
   </div>
 </template>
 
@@ -40,6 +41,7 @@ export default {
       dw: "单位:粪大肠菌群:个/L、水温:℃、pH:无量纲、其它:mg/L",
       bz:
         '备注：①河流评价参照《地表水环境质量标准》（GB3838-2002)、环办[2011]22号文件；②未开展监测填报“-1”；项目未检出填报“检出限+L"；③若项目未检出，计算平均值时取检出限的一半进行计算；④若上下游均未检出，计算“双方均值”那一栏请填报“下游监测站的检出',
+      //table title
       ths: [
         { prop: "河流名称", label: "河流名称" },
         { prop: "断面名称", label: "断面名称" },
@@ -83,6 +85,7 @@ export default {
           label: "单独评价指标（粪大肠菌群）超标情况(类别，超标倍数）"
         }
       ],
+      //tableData
       dm: [
         {
           河流名称: "龙滩河",
@@ -306,13 +309,16 @@ export default {
           "21项参评指标中超标项目（达到类别,超标倍数）": "/",
           "单独评价指标（粪大肠菌群）超标情况(类别，超标倍数）": "/"
         }
-      ]
+      ],
+      //各行数据的等级 和评价 [3:{level:5,des:""}]
+      dataCate:{"index":{"PH":{level:5,des:""}}}
     };
   },
   methods: {
     update(index, p) {
       //失去焦点
       // console.log(!this.dm[index][p]);
+      this.reSetData(index,p);
       if (!this.dm[index][p]) {
         this.dm[index][p] = "-1";
       } else {
@@ -393,18 +399,47 @@ export default {
     onfocus(e) {
       e.currentTarget.select(); //全选 文字
     },
-    dbck(row, column, cell, event) {
+    dbck(row, column, cell, event) {//双击事件
       console.log(row, column, cell, event);
     },
     getJson(msg) {
       this.dm = msg;
     },
-    initCate(i){ //
-      let arrCate=["PH","溶解氧","高锰酸盐指数","五日生化需氧量","氨氮","化学需氧量","挥发酚","氰化物","砷","汞","六价铬","铅","镉","石油类","总磷","总氮","铜","锌","氟化物","硒","阴离子表面活性剂","硫化物","粪大肠菌群"];
-      for(let x=0;x<arrCate.length;x++){
+    reSetData(i,p){ //
+      // let arrCate=["PH","溶解氧","高锰酸盐指数","五日生化需氧量","氨氮","化学需氧量","挥发酚","氰化物","砷","汞","六价铬","铅","镉","石油类","总磷","总氮","铜","锌","氟化物","硒","阴离子表面活性剂","硫化物","粪大肠菌群"];
+      // for(let x=0;x<arrCate.length;x++){
         
+      // }
+      const _level = {
+            "1": "Ⅰ",
+            "2": "Ⅱ",
+            "3": "Ⅲ",
+            "4": "Ⅳ",
+            "5": "Ⅴ",
+            "6": "劣Ⅴ",
+            "-1": 0,
+            Ⅰ: "1",
+            Ⅱ: "2",
+            Ⅲ: "3",
+            Ⅳ: "4",
+            Ⅳ: "5",
+            劣Ⅴ: "6"
+          };
+      // console.log("i:",i,".i:",this.dataCate.i,"[i]:",this.dataCate[i])
+      let tmpObj=checkdbsValue(p, this.dm[i][p]);
+      // console.log(tmpObj)
+      if(!this.dataCate[i]){
+        console.log(!this.dataCate[i]) //undifined
+        // if(!this.dataCate[i][p]){
+          this.dataCate[i]={};
+          this.dataCate[i][p]={level:tmpObj.level,
+          des:tmpObj.key +"(" +_level[tmpObj.level] +"," +"超标" +tmpObj.bs +"倍);"}
+        // }
+      }else{
+        // this.dataCate[i]={};
+        this.dataCate[i][p]={level:tmpObj.level,
+          des:tmpObj.key +"(" +_level[tmpObj.level] +"," +"超标" +tmpObj.bs +"倍);"}
       }
-     
     }
     // initData() {
     //   for (let i = 0; i < this.dm.length; i++) {
@@ -445,5 +480,6 @@ export default {
 }
 #river p {
   text-align: left;
+  width: 98%;
 }
 </style>
