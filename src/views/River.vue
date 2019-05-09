@@ -3,7 +3,13 @@
     <Header :title="title" :dw="dw" @transferJson="getJson"/>
     <el-table :data="dm" border stripe @cell-dblclick="dbck">
       <template v-for="(th,index) in ths">
-        <el-table-column :prop="th.prop" :label="th.label" :key="index" align="center" :width="index<33?'65':'200'">
+        <el-table-column
+          :prop="th.prop"
+          :label="th.label"
+          :key="index"
+          align="center"
+          :width="index<33?'65':'200'"
+        >
           <template slot-scope="scope">
             <el-input
               type="textarea"
@@ -11,7 +17,7 @@
               v-model="scope.row[th.prop]"
               @blur="update(scope.$index,th.prop)"
               size="mini"
-              autosize 
+              autosize
             ></el-input>
           </template>
         </el-table-column>
@@ -25,7 +31,7 @@
 <script>
 import Header from "../components/Header";
 import { constants } from "crypto";
-import { checkdbsValue } from '../lgxjs/lgx';
+import { checkdbsValue, _average } from "../lgxjs/lgx";
 export default {
   data() {
     return {
@@ -65,7 +71,7 @@ export default {
         { prop: "硒", label: "硒" },
         { prop: "阴离子表面活性剂", label: "阴离子表面活性剂" },
         { prop: "硫化物", label: "硫化物" },
-        { prop: "粪大肠杆菌群", label: "粪大肠杆菌群" },
+        { prop: "粪大肠菌群", label: "粪大肠杆菌群" },
         { prop: "规定类别", label: "规定类别" },
         { prop: "实测类别", label: "实测类别" },
         {
@@ -109,7 +115,7 @@ export default {
           硒: "-1",
           阴离子表面活性剂: "-1",
           硫化物: "-1",
-          粪大肠杆菌群: "-1",
+          粪大肠菌群: "-1",
           规定类别: "Ⅲ",
           实测类别: "-1",
           "21项参评指标中超标项目（达到类别,超标倍数）": "/",
@@ -146,7 +152,7 @@ export default {
           硒: "-1",
           阴离子表面活性剂: "-1",
           硫化物: "-1",
-          粪大肠杆菌群: "-1",
+          粪大肠菌群: "-1",
           规定类别: "Ⅲ",
           实测类别: "-1",
           "21项参评指标中超标项目（达到类别,超标倍数）": "/",
@@ -183,7 +189,7 @@ export default {
           硒: "-1",
           阴离子表面活性剂: "-1",
           硫化物: "-1",
-          粪大肠杆菌群: "-1",
+          粪大肠菌群: "-1",
           规定类别: "Ⅲ",
           实测类别: "-1",
           "21项参评指标中超标项目（达到类别,超标倍数）": "/",
@@ -220,7 +226,7 @@ export default {
           硒: "-1",
           阴离子表面活性剂: "-1",
           硫化物: "-1",
-          粪大肠杆菌群: "-1",
+          粪大肠菌群: "-1",
           规定类别: "Ⅲ",
           实测类别: "-1",
           "21项参评指标中超标项目（达到类别,超标倍数）": "/",
@@ -257,7 +263,7 @@ export default {
           硒: "-1",
           阴离子表面活性剂: "-1",
           硫化物: "-1",
-          粪大肠杆菌群: "-1",
+          粪大肠菌群: "-1",
           规定类别: "Ⅲ",
           实测类别: "-1",
           "21项参评指标中超标项目（达到类别,超标倍数）": "/",
@@ -294,7 +300,7 @@ export default {
           硒: "-1",
           阴离子表面活性剂: "-1",
           硫化物: "-1",
-          粪大肠杆菌群: "-1",
+          粪大肠菌群: "-1",
           规定类别: "Ⅲ",
           实测类别: "-1",
           "21项参评指标中超标项目（达到类别,超标倍数）": "/",
@@ -305,15 +311,82 @@ export default {
   },
   methods: {
     update(index, p) {
+      //失去焦点
       // console.log(!this.dm[index][p]);
       if (!this.dm[index][p]) {
         this.dm[index][p] = "-1";
       } else {
         if (this.dm[index][p].replace(/\s/g, "").length == 0) {
           this.dm[index][p] = "-1";
-        }else{
-          let tmp=checkdbsValue(p,this.dm[index][p])
-          this.bz=tmp.key+"类别："+tmp.level+"超标倍数"+tmp.bs
+        } else {
+          let tmpDes = checkdbsValue(p, this.dm[index][p]);
+          const _level = {
+            "1": "Ⅰ",
+            "2": "Ⅱ",
+            "3": "Ⅲ",
+            "4": "Ⅳ",
+            "5": "Ⅴ",
+            "6": "劣Ⅴ",
+            "-1": 0,
+            Ⅰ: "1",
+            Ⅱ: "2",
+            Ⅲ: "3",
+            Ⅳ: "4",
+            Ⅳ: "5",
+            劣Ⅴ: "6"
+          };
+          if (index % 3 != 2) {
+            //更新的不是均值栏
+            if (tmpDes.level != -1) {
+              //为项目修改值
+              if (index % 3 == 0) {
+                //上游
+                this.dm[index + 2][p] = _average(
+                  this.dm[index][p],
+                  this.dm[index + 1][p]
+                );
+                console.log(_level[tmpDes.level]);
+                if (tmpDes.level > _level[this.dm[index]["实测类别"]]) {
+                  this.dm[index]["实测类别"] = _level[tmpDes.level];
+                }
+                if (tmpDes.level > 3) {
+                  if (tmpDes.key != "粪大肠菌群") {
+                    this.dm[index][
+                      "21项参评指标中超标项目（达到类别,超标倍数）"
+                    ] +=
+                      tmpDes.key +
+                      "(" +
+                      _level[tmpDes.level] +
+                      "," +
+                      "超标" +
+                      tmpDes.bs +
+                      "倍);";
+                  } else {
+                    this.dm[index][
+                      "单独评价指标（粪大肠菌群）超标情况(类别，超标倍数）"
+                    ] +=
+                      tmpDes.key +
+                      "(" +
+                      _level[tmpDes.level] +
+                      "," +
+                      "超标" +
+                      tmpDes.bs +
+                      "倍);";
+                  }
+                }
+              } else {
+                //下游
+                this.dm[index + 1][p] = _average(
+                  this.dm[index - 1][p],
+                  this.dm[index][p]
+                );
+                console.log(this.dm[index][p]);
+              }
+            }
+          }
+          // tmp = checkdbsValue(p, this.dm[index][p]);
+          this.bz =
+            tmpDes.key + "类别：" + tmpDes.level + "超标倍数" + tmpDes.bs; //Debug
         }
       }
     },
@@ -323,24 +396,31 @@ export default {
     dbck(row, column, cell, event) {
       console.log(row, column, cell, event);
     },
-    getJson(msg){
-      this.dm=msg
+    getJson(msg) {
+      this.dm = msg;
     },
-    initData() {
-      for (let i = 0; i < this.dm.length; i++) {
-        for (let p = 0; p < this.ths.length; p++) {
-          if (typeof this.dm[i][p] === "undefined") {
-            this.dm[i][this.ths[p].prop] = "-1";
-            console.log(typeof this.dm[i][p]);
-          }
-        }
+    initCate(i){ //
+      let arrCate=["PH","溶解氧","高锰酸盐指数","五日生化需氧量","氨氮","化学需氧量","挥发酚","氰化物","砷","汞","六价铬","铅","镉","石油类","总磷","总氮","铜","锌","氟化物","硒","阴离子表面活性剂","硫化物","粪大肠菌群"];
+      for(let x=0;x<arrCate.length;x++){
+        
       }
+     
     }
+    // initData() {
+    //   for (let i = 0; i < this.dm.length; i++) {
+    //     for (let p = 0; p < this.ths.length; p++) {
+    //       if (typeof this.dm[i][p] === "undefined") {
+    //         this.dm[i][this.ths[p].prop] = "-1";
+    //         console.log(typeof this.dm[i][p]);
+    //       }
+    //     }
+    //   }
+    // }
   },
 
   components: {
     Header
-  },
+  }
 };
 </script>
 
@@ -363,7 +443,7 @@ export default {
   background-color: rgba(255, 159, 243, 0.2);
   border: 1px dashed #cccccc;
 }
-#river p{
+#river p {
   text-align: left;
 }
 </style>
