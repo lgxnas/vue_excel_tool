@@ -311,14 +311,14 @@ export default {
         }
       ],
       //各行数据的等级 和评价 [3:{level:5,des:""}]
-      dataCate:{"index":{"PH":{level:5,des:""}}}
+      dataCate: {} //{"index":[{"PH":{level:5,des:""}],total:{max:"Ⅳ",des:"超标信息汇总"}}
     };
   },
   methods: {
     update(index, p) {
       //失去焦点
       // console.log(!this.dm[index][p]);
-      this.reSetData(index,p);
+      this.reSetData(index, p); //Debug
       if (!this.dm[index][p]) {
         this.dm[index][p] = "-1";
       } else {
@@ -326,119 +326,180 @@ export default {
           this.dm[index][p] = "-1";
         } else {
           let tmpDes = checkdbsValue(p, this.dm[index][p]);
-          const _level = {
-            "1": "Ⅰ",
-            "2": "Ⅱ",
-            "3": "Ⅲ",
-            "4": "Ⅳ",
-            "5": "Ⅴ",
-            "6": "劣Ⅴ",
-            "-1": 0,
-            Ⅰ: "1",
-            Ⅱ: "2",
-            Ⅲ: "3",
-            Ⅳ: "4",
-            Ⅳ: "5",
-            劣Ⅴ: "6"
-          };
+          // const _level = {
+          //   "1": "Ⅰ",
+          //   "2": "Ⅱ",
+          //   "3": "Ⅲ",
+          //   "4": "Ⅳ",
+          //   "5": "Ⅴ",
+          //   "6": "劣Ⅴ",
+          //   "-1": 0,
+          //   Ⅰ: "1",
+          //   Ⅱ: "2",
+          //   Ⅲ: "3",
+          //   Ⅳ: "4",
+          //   Ⅳ: "5",
+          //   劣Ⅴ: "6"
+          // };
           if (index % 3 != 2) {
             //更新的不是均值栏
             if (tmpDes.level != -1) {
               //为项目修改值
+              this.reSetData(index,p);
               if (index % 3 == 0) {
                 //上游
                 this.dm[index + 2][p] = _average(
                   this.dm[index][p],
                   this.dm[index + 1][p]
                 );
-                console.log(_level[tmpDes.level]);
-                if (tmpDes.level > _level[this.dm[index]["实测类别"]]) {
-                  this.dm[index]["实测类别"] = _level[tmpDes.level];
-                }
-                if (tmpDes.level > 3) {
-                  if (tmpDes.key != "粪大肠菌群") {
-                    this.dm[index][
-                      "21项参评指标中超标项目（达到类别,超标倍数）"
-                    ] +=
-                      tmpDes.key +
-                      "(" +
-                      _level[tmpDes.level] +
-                      "," +
-                      "超标" +
-                      tmpDes.bs +
-                      "倍);";
-                  } else {
-                    this.dm[index][
-                      "单独评价指标（粪大肠菌群）超标情况(类别，超标倍数）"
-                    ] +=
-                      tmpDes.key +
-                      "(" +
-                      _level[tmpDes.level] +
-                      "," +
-                      "超标" +
-                      tmpDes.bs +
-                      "倍);";
-                  }
-                }
+                this.reSetData(index+2,p);
+                // console.log(_level[tmpDes.level]);
+                // if (tmpDes.level > _level[this.dm[index]["实测类别"]]) {
+                //   this.dm[index]["实测类别"] = _level[tmpDes.level];
+                // }
+                // if (tmpDes.level > 3) {
+                //   if (tmpDes.key != "粪大肠菌群") {
+                //     this.dm[index][
+                //       "21项参评指标中超标项目（达到类别,超标倍数）"
+                //     ] +=
+                //       tmpDes.key +
+                //       "(" +
+                //       _level[tmpDes.level] +
+                //       "," +
+                //       "超标" +
+                //       tmpDes.bs +
+                //       "倍);";
+                //   } else {
+                //     this.dm[index][
+                //       "单独评价指标（粪大肠菌群）超标情况(类别，超标倍数）"
+                //     ] +=
+                //       tmpDes.key +
+                //       "(" +
+                //       _level[tmpDes.level] +
+                //       "," +
+                //       "超标" +
+                //       tmpDes.bs +
+                //       "倍);";
+                //   }
+                // }
               } else {
                 //下游
                 this.dm[index + 1][p] = _average(
                   this.dm[index - 1][p],
                   this.dm[index][p]
                 );
+                this.reSetData(index+1,p);
                 console.log(this.dm[index][p]);
               }
+              this.dm[index]["实测类别"] =this.reSetData.total.level;
+              this.dm[index][
+                      "21项参评指标中超标项目（达到类别,超标倍数）"
+                    ] =this.reSetData.total.des;
+
             }
           }
           // tmp = checkdbsValue(p, this.dm[index][p]);
-          this.bz =
-            tmpDes.key + "类别：" + tmpDes.level + "超标倍数" + tmpDes.bs; //Debug
+          // this.bz =
+            // tmpDes.key + "类别：" + tmpDes.level + "超标倍数" + tmpDes.bs; //Debug
         }
       }
     },
     onfocus(e) {
       e.currentTarget.select(); //全选 文字
     },
-    dbck(row, column, cell, event) {//双击事件
+    dbck(row, column, cell, event) {
+      //双击事件
       console.log(row, column, cell, event);
     },
     getJson(msg) {
       this.dm = msg;
     },
-    reSetData(i,p){ //
+    reSetData(i, p) {
       // let arrCate=["PH","溶解氧","高锰酸盐指数","五日生化需氧量","氨氮","化学需氧量","挥发酚","氰化物","砷","汞","六价铬","铅","镉","石油类","总磷","总氮","铜","锌","氟化物","硒","阴离子表面活性剂","硫化物","粪大肠菌群"];
-      // for(let x=0;x<arrCate.length;x++){
-        
-      // }
+      let arrCate = [];
+      let arrLevel = [];
       const _level = {
-            "1": "Ⅰ",
-            "2": "Ⅱ",
-            "3": "Ⅲ",
-            "4": "Ⅳ",
-            "5": "Ⅴ",
-            "6": "劣Ⅴ",
-            "-1": 0,
-            Ⅰ: "1",
-            Ⅱ: "2",
-            Ⅲ: "3",
-            Ⅳ: "4",
-            Ⅳ: "5",
-            劣Ⅴ: "6"
-          };
+        "1": "Ⅰ",
+        "2": "Ⅱ",
+        "3": "Ⅲ",
+        "4": "Ⅳ",
+        "5": "Ⅴ",
+        "6": "劣Ⅴ",
+        "-1": 0,
+        Ⅰ: "1",
+        Ⅱ: "2",
+        Ⅲ: "3",
+        Ⅳ: "4",
+        Ⅳ: "5",
+        劣Ⅴ: "6"
+      };
       // console.log("i:",i,".i:",this.dataCate.i,"[i]:",this.dataCate[i])
-      let tmpObj=checkdbsValue(p, this.dm[i][p]);
+      let tmpObj = checkdbsValue(p, this.dm[i][p]);
       // console.log(tmpObj)
-      if(!this.dataCate[i]){
-        console.log(!this.dataCate[i]) //undifined
-        // if(!this.dataCate[i][p]){
-          this.dataCate[i]={};
-          this.dataCate[i][p]={level:tmpObj.level,
-          des:tmpObj.key +"(" +_level[tmpObj.level] +"," +"超标" +tmpObj.bs +"倍);"}
-        // }
-      }else{
-        // this.dataCate[i]={};
-        this.dataCate[i][p]={level:tmpObj.level,
-          des:tmpObj.key +"(" +_level[tmpObj.level] +"," +"超标" +tmpObj.bs +"倍);"}
+      if (!this.dataCate[i]) {
+        console.log(!this.dataCate[i]); //undifined
+        this.dataCate[i] = {}; //创建
+        // this.dataCate[i]["total"]={};
+        this.dataCate[i][p] = {
+          level: tmpObj.level,
+          des:
+            tmpObj.key +
+            "(" +
+            _level[tmpObj.level] +
+            "," +
+            "超标" +
+            tmpObj.bs +
+            "倍);"
+        };
+        this.dataCate[i]["total"]={};
+        if(p!="粪大肠菌群"){
+          this.dataCate[i]["total"]["level"]=_level[tmpObj.level];//罗马数
+          if(tmpObj.level>3){
+            this.dataCate[i]["total"].des=tmpObj.des;
+          }else{
+            this.dataCate[i]["total"].des="/";
+          }
+        }
+
+      } else { //已分析过 该行
+        // let oldCate=this.dataCate[i][p];
+        this.dataCate[i][p] = {
+          level: tmpObj.level,
+          des:
+            tmpObj.key +
+            "(" +
+            _level[tmpObj.level] +
+            "," +
+            "超标" +
+            tmpObj.bs +
+            "倍);"
+        };
+        if(this.dataCate[i].total.level<tmpObj.level){ //更新level
+          this.dm[i]["实测类别"] = _level[tmpObj.level];
+        }
+        if(tmpObj.level>3){ //更新des
+          this.dataCate[i].total.des="";
+          for(let k in this.dataCate[i]){
+            if(k!="total"){
+              if(this.dataCate[i][k].level>3){
+                this.dataCate[i].total.des+=this.dataCate[i][k].des;
+              }
+            }
+          }
+        }
+        if(tmpObj.level>3 && p=="粪大肠菌群"){ //粪大 直接设置
+          this.dm[i][
+                      "单独评价指标（粪大肠菌群）超标情况(类别，超标倍数）"
+                    ] +=
+                      tmpObj.key +
+                      "(" +
+                      _level[tmpObj.level] +
+                      "," +
+                      "超标" +
+                      tmpObj.bs +
+                      "倍);";
+        }
+      
       }
     }
     // initData() {
