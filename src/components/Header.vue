@@ -42,7 +42,7 @@ export default {
           this.dbjson = XLSX.utils.sheet_to_json(
             workbook.Sheets[workbook.SheetNames[0]]
           );
-          console.log(this.dbjson);
+          // console.log(this.dbjson);
           this.$emit("transferJson", this.dbjson);
         } catch (e) {
           this.$message.warning("文件类型不正确！");
