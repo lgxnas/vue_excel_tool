@@ -1,5 +1,7 @@
 <template>
   <div class="aside">
+     <!-- :style="showAside">  -->
+    <!-- style="display:none"> -->
     <router-link to="/home">
       <span class="title">Mr.Li</span>
     </router-link>
@@ -8,6 +10,7 @@
       background-color="#130f40"
       text-color="#fff"
       active-text-color="#ffd04b"
+
     >
       <!-- default-active="ssurface" -->
       <template v-for="ml in menulist">
@@ -56,7 +59,8 @@ export default {
         }
       ]
     };
-  }
+  },
+  // props:["showAside"]
 };
 </script>
 

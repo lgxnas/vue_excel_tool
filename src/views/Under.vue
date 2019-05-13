@@ -1,5 +1,8 @@
 <template>
   <div>
+          <!-- <el-aside width="130px">
+        <Aside_lgx/>
+      </el-aside> -->
     <Header :title="title" :dw="dw" @transferJson="getJson"/>
     <!-- {{dxsjson}} -->
     <el-table :data="result" style="width: 100%" border stripe>

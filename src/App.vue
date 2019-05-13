@@ -2,10 +2,11 @@
   <div id="app">
     <el-container>
       <!-- <el-aside> -->
-      <el-aside width="130px">
+              <!-- <el-aside width="130px">
         <Aside_lgx/>
-      </el-aside>
+      </el-aside> -->
       <el-container id="cright">
+        
         <el-main>
           <router-view/>
         </el-main>
@@ -47,4 +48,5 @@ body,
 #cright{
   max-height: 100vh;
 }
+
 </style>

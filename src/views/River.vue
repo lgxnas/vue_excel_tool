@@ -1,14 +1,35 @@
 <template>
   <div id="river">
-    <Header :title="title" :dw="dw" @transferJson="getJson"/>
-    <el-table :data="dm" border stripe @cell-dblclick="dbck">
+    <el-container >
+      <el-aside width="130px" :class="noPrint">
+        <Aside_lgx/>
+      </el-aside>
+
+    <el-container>
+    <el-main>
+    <Header :title="title" :dw="dw" :dspy="noPrint" @transferJson="getJson"/>
+    <el-row :class="noPrint">
+      <el-col :span="2">
+        <el-button
+          icon="el-icon-s-data"
+          size="small"
+          type="primary"
+          style="margin:20px;"
+          @click="showFour"
+        >{{showButton?'显示常规四项':'显示全部项目'}}</el-button>
+      </el-col>
+      <el-col :span="2">
+        <el-button size="mini" type="primary" @click="printContent" style="margin:20px;">打印</el-button>
+      </el-col>
+    </el-row>
+    <el-table :data="dm" border stripe @cell-dblclick="dbck" :span-method="objectSpanMethod">
       <template v-for="(th,index) in ths">
         <el-table-column
           :prop="th.prop"
           :label="th.label"
           :key="index"
           align="center"
-          :width="index<33?'65':'200'"
+          :width="index<ths.length-2?'65':'200'"
         >
           <template slot-scope="scope">
             <el-input
@@ -25,15 +46,14 @@
       </template>
     </el-table>
     <p>{{bz}}</p>
-    <!-- 0:{{dm[0]["单独评价指标（粪大肠菌群）超标情况(类别，超标倍数）"]}}<br>
-    1:{{dm[1]["单独评价指标（粪大肠菌群）超标情况(类别，超标倍数）"]}}<br>
-    2:{{dm[2]["单独评价指标（粪大肠菌群）超标情况(类别，超标倍数）"]}}<br>
-    {{dm}} -->
-    <!-- {{this.dataCate["2"].total}} -->
+    </el-main>
+    </el-container>
+    </el-container>
   </div>
 </template>
 
 <script>
+import Aside_lgx from "../components/Aside.vue"
 import Header from "../components/Header";
 import { constants } from "crypto";
 import { checkdbsValue, _average } from "../lgxjs/lgx";
@@ -41,21 +61,23 @@ import { isString } from "util";
 export default {
   data() {
     return {
-      inputDisable:false,
+      inputDisable: false,
       title: "河流断面分析",
       // tableData,
       dw: "单位:粪大肠菌群:个/L、水温:℃、pH:无量纲、其它:mg/L",
       bz:
         '备注：①河流评价参照《地表水环境质量标准》（GB3838-2002)、环办[2011]22号文件；②未开展监测填报“-1”；项目未检出填报“检出限+L"；③若项目未检出，计算平均值时取检出限的一半进行计算；④若上下游均未检出，计算“双方均值”那一栏请填报“下游监测站的检出',
       //table title
-      ths: [
+      ths0: [
         { prop: "河流名称", label: "河流名称" },
         { prop: "断面名称", label: "断面名称" },
         { prop: "交界县名称", label: "交界县名称" },
         { prop: "测站名称", label: "测站名称" },
         { prop: "年", label: "年" },
         { prop: "月", label: "月" },
-        { prop: "日", label: "日" },
+        { prop: "日", label: "日" }
+      ],
+      thsxm: [
         { prop: "水温", label: "水温" },
         { prop: "PH", label: "PH" },
         { prop: "溶解氧", label: "溶解氧" },
@@ -79,7 +101,9 @@ export default {
         { prop: "硒", label: "硒" },
         { prop: "阴离子表面活性剂", label: "阴离子表面活性剂" },
         { prop: "硫化物", label: "硫化物" },
-        { prop: "粪大肠菌群", label: "粪大肠杆菌群" },
+        { prop: "粪大肠菌群", label: "粪大肠杆菌群" }
+      ],
+      thspj: [
         { prop: "规定类别", label: "规定类别" },
         { prop: "实测类别", label: "实测类别" },
         {
@@ -92,6 +116,33 @@ export default {
         }
       ],
       //tableData
+      filterArr: [
+        "水温",
+        "PH",
+        "溶解氧",
+        "高锰酸盐指数",
+        "五日生化需氧量",
+        "氨氮",
+        "化学需氧量",
+        "挥发酚",
+        "氰化物",
+        "砷",
+        "汞",
+        "六价铬",
+        "铅",
+        "镉",
+        "石油类",
+        "总磷",
+        "总氮",
+        "铜",
+        "锌",
+        "氟化物",
+        "硒",
+        "阴离子表面活性剂",
+        "硫化物",
+        "粪大肠菌群"
+      ],
+      showButton: true,
       dm: [
         {
           河流名称: "龙滩河",
@@ -316,10 +367,55 @@ export default {
           "单独评价指标（粪大肠菌群）超标情况(类别，超标倍数）": "/"
         }
       ],
-      dataCate:{}
+      dataCate: {},
+      noPrint:""
     };
   },
   methods: {
+    showFour() {
+      // let tmpArr=this.ths;
+      // console.log(tmpArr)
+      // let four=["PH","氨氮","总磷","化学需氧量"]
+      // for (let i=tmpArr.length-5;i>6;i--){
+      //   if(four.indexOf(tmpArr[i].prop)==-1){
+      //     // console.log(this.ths[i].prop,four.indexOf(this.ths[i].prop))
+      //     tmpArr.splice(i,1)
+      //   }
+      // }
+      // this.ths=tmpArr
+      // console.log(tmpArr)
+      this.showButton = !this.showButton;
+      if (!this.showButton) {
+        this.filterArr = ["PH", "氨氮", "总磷", "化学需氧量"];
+      } else {
+        this.filterArr = [
+          "水温",
+          "PH",
+          "溶解氧",
+          "高锰酸盐指数",
+          "五日生化需氧量",
+          "氨氮",
+          "化学需氧量",
+          "挥发酚",
+          "氰化物",
+          "砷",
+          "汞",
+          "六价铬",
+          "铅",
+          "镉",
+          "石油类",
+          "总磷",
+          "总氮",
+          "铜",
+          "锌",
+          "氟化物",
+          "硒",
+          "阴离子表面活性剂",
+          "硫化物",
+          "粪大肠菌群"
+        ];
+      }
+    },
     update(index, p) {
       //失去焦点
       // console.log(typeof(this.dm[index][p]));//string
@@ -373,33 +469,8 @@ export default {
     },
     getJson(msg) {
       this.dm = msg;
-      this.inputDisable=true;
-      const dmxm = [
-        "水温",
-        "PH",
-        "溶解氧",
-        "高锰酸盐指数",
-        "五日生化需氧量",
-        "氨氮",
-        "化学需氧量",
-        "挥发酚",
-        "氰化物",
-        "砷",
-        "汞",
-        "六价铬",
-        "铅",
-        "镉",
-        "石油类",
-        "总磷",
-        "总氮",
-        "铜",
-        "锌",
-        "氟化物",
-        "硒",
-        "阴离子表面活性剂",
-        "硫化物",
-        "粪大肠菌群"
-      ];
+      this.inputDisable = true;
+      const dmxm = this.filterArr;
       for (let i = 0; i < msg.length; i += 3) {
         // if(i%3!=2){ //不为均值行
         // if(i%3==0){ //上游
@@ -410,7 +481,7 @@ export default {
         //     this.dm[excel][this.ths[th].prop]="-1";
         //   }}
         // }
-        
+
         for (let p of dmxm) {
           this.dm[i + 2][p] = _average(this.dm[i][p], this.dm[i + 1][p]);
           this.reSetData(i, p, false);
@@ -492,27 +563,27 @@ export default {
           };
           // console.log("1:",isSingle);
           // if (isSingle) {
-            //改单指标
-            let arrLevel = [];
-            this.dataCate[i].total.des = "";
+          //改单指标
+          let arrLevel = [];
+          this.dataCate[i].total.des = "";
 
-            for (let k in this.dataCate[i]) {
-              if (k != "total") {
-                arrLevel.push(this.dataCate[i][k].level);
-                if (this.dataCate[i][k].level > 3) {
-                  this.dataCate[i].total.des += this.dataCate[i][k].des;
-                }
+          for (let k in this.dataCate[i]) {
+            if (k != "total") {
+              arrLevel.push(this.dataCate[i][k].level);
+              if (this.dataCate[i][k].level > 3) {
+                this.dataCate[i].total.des += this.dataCate[i][k].des;
               }
             }
-            // this.dataCate[i].total.level = _level[Math.max.apply(null, arrLevel)];
-            this.dataCate[i].total.level = Math.max.apply(null, arrLevel);
-            // if (Math.max.apply(null, arrLevel) < 4) {
-            if (this.dataCate[i].total.level < 4) {
-              this.dataCate[i].total.des = "/";
-            }
+          }
+          // this.dataCate[i].total.level = _level[Math.max.apply(null, arrLevel)];
+          this.dataCate[i].total.level = Math.max.apply(null, arrLevel);
+          // if (Math.max.apply(null, arrLevel) < 4) {
+          if (this.dataCate[i].total.level < 4) {
+            this.dataCate[i].total.des = "/";
+          }
           // } else {
-            //批量分析导入excel
-            // console.log("2:",isSingle);
+          //批量分析导入excel
+          // console.log("2:",isSingle);
           //   if (tmpObj.level > 3) {
           //     // console.log(key, tmpObj.level, this.dataCate[i][p].des);
           //     this.dataCate[i].total.des += this.dataCate[i][p].des;
@@ -523,8 +594,9 @@ export default {
           // }
         }
         this.dm[i]["实测类别"] = _level[this.dataCate[i].total.level];
-        this.dm[i]["21项参评指标中超标项目（达到类别,超标倍数）"] =
-          this.dataCate[i].total.des;
+        this.dm[i][
+          "21项参评指标中超标项目（达到类别,超标倍数）"
+        ] = this.dataCate[i].total.des;
       }
       // if (p == "粪大肠菌群") {
       //粪大 直接设置
@@ -539,9 +611,9 @@ export default {
             "超标" +
             tmpObj.bs +
             "倍);";
-            // this.$set(this.dm,i)
-            // this.dm.reverse();
-            // console.log(i)
+          // this.$set(this.dm,i)
+          // this.dm.reverse();
+          // console.log(i)
         } else {
           this.dm[i]["单独评价指标（粪大肠菌群）超标情况(类别，超标倍数）"] =
             "/";
@@ -549,7 +621,34 @@ export default {
         // console.log(this.dm[i]["单独评价指标（粪大肠菌群）超标情况(类别，超标倍数）"])
       }
       // console.log(this.dataCate[i]);
-    }
+    },
+    objectSpanMethod({ row, column, rowIndex, columnIndex }) {
+      if (columnIndex < 3) {
+        if (rowIndex % 3 === 0) {
+          return {
+            rowspan: 3,
+            colspan: 1
+          };
+        } else {
+          return {
+            rowspan: 0,
+            colspan: 0
+          };
+        }
+      }
+    },
+    printContent(){
+    // let wpt = document.getElementsByClassName('el-table')[0];
+    // let newContent = wpt.innerHTML;
+    // let oldContent = document.body.innerHTML;
+    
+    // document.body.innerHTML = newContent;
+    // window.print(); //打印方法
+    // window.localtion.reload();
+    // document.body.innerHTML = oldContent;
+    this.noPrint="noPrint"
+
+}
     // initData() {
     //   for (let i = 0; i < this.dm.length; i++) {
     //     for (let p = 0; p < this.ths.length; p++) {
@@ -563,7 +662,22 @@ export default {
   },
 
   components: {
-    Header
+    Header,
+    Aside_lgx
+  },
+  computed: {
+    ths: function() {
+      let arr = [];
+      arr.push(...this.ths0);
+      // for(let i=0;i<this.filterArr.length;i++){
+      arr.push(
+        ...this.thsxm.filter(value => this.filterArr.includes(value.prop))
+      ); //==this.filterArr[i]));
+      // }
+      arr.push(...this.thspj);
+      // return this.ths0.filter(value=>value.prop!="PH")
+      return arr;
+    }
   }
 };
 </script>
@@ -589,6 +703,9 @@ export default {
 }
 #river p {
   text-align: left;
-  width: 98%;
+  width: 60%;
+}
+.noPrint{
+  display: none;
 }
 </style>
