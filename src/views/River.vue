@@ -422,7 +422,7 @@ export default {
       // this.reSetData(index, p); //Debug
       let value = this.dm[index][p];
       // console.log(value,typeof(value));//string
-      console.log((0.15)._toFixed(1),(0.25)._toFixed(1),(0.35)._toFixed(1),(0.45)._toFixed(1),(0.55)._toFixed(1),(0.65)._toFixed(1),(0.75)._toFixed(1))
+      // console.log((0.15)._toFixed(1),(0.25)._toFixed(1),(0.35)._toFixed(1),(0.45)._toFixed(1),(0.55)._toFixed(1),(0.65)._toFixed(1),(0.75)._toFixed(1))
       if (!value || value == "0") {
         this.dm[index][p] = "-1";
         // console.log(this.dm[index][p])

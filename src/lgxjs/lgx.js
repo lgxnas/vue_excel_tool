@@ -271,11 +271,19 @@ function toFloat(value) {
 Number.prototype._toFixed=function(num=0){ //自定义 4舍6入5成双 返回string 或 number
     // console.log(this,num)
     let str=this.toString()
+    let len=str.length
     if(str.indexOf(".")!=-1){
         let floatArr=str.split(".")[1].match(/\d/g)    
-        if(floatArr[floatArr.length-1]=="5" && floatArr.length==num+1 && parseInt(floatArr[floatArr.length-2])%2==0){
-            console.log(this,num,str.slice(0,str.length-1))
+        if(floatArr[floatArr.length-1]=="5" && floatArr.length==num+1){//4.65
+            if(parseInt(floatArr[floatArr.length-2])%2==0){
+            console.log(this,num,str.slice(0,len-1))
             return str.slice(0,str.length-1)
+            }else{ //4.75
+                let multiple=Math.pow(10,num)
+                let newStr=((this*multiple+1)/multiple).toString()
+                console.log(this,num,newStr,newStr.length,len-1)
+                return newStr.slice(0,newStr.length-1)
+            }
         }
     }
     // console.log(this,this.toFixed(num))
