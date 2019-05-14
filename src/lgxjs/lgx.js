@@ -243,7 +243,7 @@ function analyse_value(key, value) { //value：测量值 v3：3类标准值 numb
     let level = "";
     if (value > v3) {
         let tmpbs = Math.abs(value - v3) / v3;
-        bs = tmpbs.toFixed(2); //toFixed 4舍6入
+        bs = tmpbs._toFixed(2); //toFixed 4舍6入
         // console.log(key, value, v3, bs)
         if (value > dxs[2][key]) {
             level = "Ⅴ";
@@ -267,43 +267,32 @@ function toFloat(value) {
     }
     return valFloat;
 }
+
+Number.prototype._toFixed=function(num=0){ //自定义 4舍6入5成双 返回string 或 number
+    // console.log(this,num)
+    let str=this.toString()
+    if(str.indexOf(".")!=-1){
+        let floatArr=str.split(".")[1].match(/\d/g)    
+        if(floatArr[floatArr.length-1]=="5" && floatArr.length==num+1 && parseInt(floatArr[floatArr.length-2])%2==0){
+            console.log(this,num,str.slice(0,str.length-1))
+            return str.slice(0,str.length-1)
+        }
+    }
+    // console.log(this,this.toFixed(num))
+    return this.toFixed(num)
+}
+
 //计算均值 返回 string
 function _average(s, x, countFloat = 0) { //val_s,val_x string 0.05L 或 数字 ,countFloat 小数位数 为规范数据准备 暂时没用
     // let tps = typeof (s);
     // let tpx = typeof (x); //下游类型
     // console.log("tps:",tps,"s:",s,"tpx:",tpx,"x:",x)
-    let av = ""; //返回结果
+    let av =0; //返回结果
     if(typeof(s)!="string"){
     s=s.toString();}
     if(typeof(x)!="string"){
     x=x.toString();}
-    // console.log(s,x)
-    // let countFloat=0; //小数位数
-    // if (tps == "string" && tpx != "string" && s.indexOf("L") != -1) {
-    // if (tps == "string" && tpx != "string" && s.indexOf("L") != -1) { //上游未检出，下游检出
-    //     s = parseFloat(s.replace(/L|\s/g, ""));
-    //     countFloat = s.toString().split(".").length;
-    //     av = ((s + x) / 2).toFixed(countFloat);
-    // } else if (tpx == "string" && tps != "string" && x.indexOf("L") != -1) {
-    //     x = parseFloat(x.replace(/L|\s/g, ""));
-    //     countFloat = x.toString().split(".").length;
-    //     av = ((s + x) / 2).toFixed(countFloat);
-    // } else if (tps == "string" && tpx == "string" && s.indexOf("L") != -1 && x.indexOf("L") != -1) {
-    //     av = tpx;
-    // } else if (s == -1 && x != -1) {
-    //     av = x;
-    // } else if (x == -1 && s != -1) {
-    //     av = s;
-    // } else {
-    //     s = parseFloat(s.replace(/L|\s/g, ""));
-    //     x = parseFloat(x.replace(/L|\s/g, ""));
-    //     if (x.toString().indexOf(".") != -1) {
-    //         countFloat = x.toString().split(".")[1].length;
-    //     }
-    //     // console.log(x, x.toString(), countFloat)
-    //     av = ((s + x) / 2).toFixed(countFloat);
-    // }
-    // let sx=s.indexOf("L")*x.indexOf("L");
+    
     if (s == "-1" && x == "-1") { //双方未监测
         av = "-1";
         //一方未监测
@@ -318,7 +307,8 @@ function _average(s, x, countFloat = 0) { //val_s,val_x string 0.05L 或 数字 
             if (x.indexOf(".") != -1) {
                 countFloat = x.split(".")[1].length
             }
-            av = ((parseFloat(s.replace(/L|\s/g, "")) + parseFloat(x.replace(/L|\s/g, ""))) / 2).toFixed(countFloat);
+            av=((parseFloat(s) + parseFloat(x)) / 2)._toFixed(countFloat);
+        //    av=_toFixed((parseFloat(s) + parseFloat(x)) / 2,countFloat);
         } else { //一方未检出
             let l = 0; //未检出数据 /2，含 L
             let unl = 0; //检出数据，不含L
@@ -330,8 +320,8 @@ function _average(s, x, countFloat = 0) { //val_s,val_x string 0.05L 或 数字 
                 l = parseFloat(x.replace(/L|\s/g, "")) / 2;
                 unl = parseFloat(s.replace(/L|\s/g, "")) ;
             }
-            countFloat = l.toString().split(".")[1].length;
-            av = ((l + unl) / 2).toFixed(countFloat)//.toString();
+            countFloat = x.toString().replace(/L|\s/g, "").split(".")[1].length;
+            av = ((l + unl) / 2)._toFixed(countFloat)//.toString();
         }
     }
     return av;
@@ -387,7 +377,7 @@ function checkdbsValue(key, value, islake = false) {
                         lv = i + 1;
                         if (i > 2) { //i=3 >3类水
                             let tmpbs = Math.abs(value - dbs_o[2]) / dbs_o[2];
-                            bs = tmpbs.toFixed(2); //toFixed 4舍6入
+                            bs = tmpbs._toFixed(2); //toFixed 4舍6入
                         }
                         return {
                             key: key,
@@ -397,7 +387,7 @@ function checkdbsValue(key, value, islake = false) {
                     }
                 }
                 let tmpbs = Math.abs(value - dbs_o[2]) / dbs_o[2];
-                bs = tmpbs.toFixed(2); //toFixed 4舍6入
+                bs = tmpbs._toFixed(2); //toFixed 4舍6入
                 return {
                     key: key,
                     bs: bs,
@@ -425,7 +415,7 @@ function checkdbsValue(key, value, islake = false) {
                     }
                 }
                 let tmpbs = Math.abs(value - dbs_tp[2]) / dbs_tp[2];
-                bs = tmpbs.toFixed(2); //toFixed 4舍6入
+                bs = tmpbs._toFixed(2); //toFixed 4舍6入
                 return {
                     key: key,
                     bs: bs,
@@ -457,7 +447,7 @@ function checkdbsValue(key, value, islake = false) {
                     }
                 }
                 let tmpbs = Math.abs(value - v3) / v3;
-                bs = tmpbs.toFixed(2); //toFixed 4舍6入
+                bs = tmpbs._toFixed(2); //toFixed 4舍6入
                 return {
                     key: key,
                     bs: bs,

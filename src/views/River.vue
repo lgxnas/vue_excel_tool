@@ -1,14 +1,14 @@
 <template>
   <div id="river">
     <el-container >
-      <el-aside width="130px" :class="noPrint">
+      <el-aside width="130px" class="noPrint">
         <Aside_lgx/>
       </el-aside>
 
     <el-container>
     <el-main>
-    <Header :title="title" :dw="dw" :dspy="noPrint" @transferJson="getJson"/>
-    <el-row :class="noPrint">
+    <Header :title="title" :dw="dw" @transferJson="getJson"/>
+    <el-row class="noPrint">
       <el-col :span="2">
         <el-button
           icon="el-icon-s-data"
@@ -18,9 +18,9 @@
           @click="showFour"
         >{{showButton?'显示常规四项':'显示全部项目'}}</el-button>
       </el-col>
-      <el-col :span="2">
+      <!-- <el-col :span="2">
         <el-button size="mini" type="primary" @click="printContent" style="margin:20px;">打印</el-button>
-      </el-col>
+      </el-col> -->
     </el-row>
     <el-table :data="dm" border stripe @cell-dblclick="dbck" :span-method="objectSpanMethod">
       <template v-for="(th,index) in ths">
@@ -56,17 +56,17 @@
 import Aside_lgx from "../components/Aside.vue"
 import Header from "../components/Header";
 import { constants } from "crypto";
-import { checkdbsValue, _average } from "../lgxjs/lgx";
+import { checkdbsValue, _average,_toFixed } from "../lgxjs/lgx";
 import { isString } from "util";
 export default {
   data() {
     return {
       inputDisable: false,
-      title: "河流断面分析",
+      title: "附件3：南充市县域交界河流监测数据及综合评价结果",
       // tableData,
       dw: "单位:粪大肠菌群:个/L、水温:℃、pH:无量纲、其它:mg/L",
       bz:
-        '备注：①河流评价参照《地表水环境质量标准》（GB3838-2002)、环办[2011]22号文件；②未开展监测填报“-1”；项目未检出填报“检出限+L"；③若项目未检出，计算平均值时取检出限的一半进行计算；④若上下游均未检出，计算“双方均值”那一栏请填报“下游监测站的检出',
+        '备注：①河流评价参照《地表水环境质量标准》（GB3838-2002)、环办[2011]22号文件；②未开展监测填报“-1”；项目未检出填报“检出限+L"；③若项目未检出，计算平均值时取检出限的一半进行计算；④若上下游均未检出，计算“双方均值”那一栏请填报“下游监测站的检出限”。⑤该表格经上下游监测站确认盖章后，由下游监测站负责数据上报，要求同时上报“EXCEl表格”和“双方盖章后的扫描图片”电子版，不接收纸质版报告。⑥数据上报在发送离线文件同时，请同时发送邮件，以便留档备查。',
       //table title
       ths0: [
         { prop: "河流名称", label: "河流名称" },
@@ -422,8 +422,10 @@ export default {
       // this.reSetData(index, p); //Debug
       let value = this.dm[index][p];
       // console.log(value,typeof(value));//string
+      console.log((0.15)._toFixed(1),(0.25)._toFixed(1),(0.35)._toFixed(1),(0.45)._toFixed(1),(0.55)._toFixed(1),(0.65)._toFixed(1),(0.75)._toFixed(1))
       if (!value || value == "0") {
         this.dm[index][p] = "-1";
+        // console.log(this.dm[index][p])
       } else {
         if (this.dm[index][p].toString().replace(/\s/g, "").length == 0) {
           this.dm[index][p] = "-1";
@@ -483,7 +485,9 @@ export default {
         // }
 
         for (let p of dmxm) {
-          this.dm[i + 2][p] = _average(this.dm[i][p], this.dm[i + 1][p]);
+          if(!this.dm[i][p]){this.dm[i][p]="-1"}
+          if(!this.dm[i+1][p]){this.dm[i+1][p]="-1"}
+          this.dm[i + 2][p] = _average(this.dm[i][p], this.dm[i+1][p]);
           this.reSetData(i, p, false);
           this.reSetData(i + 1, p, false);
           this.reSetData(i + 2, p, false);
@@ -646,7 +650,7 @@ export default {
     // window.print(); //打印方法
     // window.localtion.reload();
     // document.body.innerHTML = oldContent;
-    this.noPrint="noPrint"
+    // this.noPrint="noPrint"
 
 }
     // initData() {
@@ -703,9 +707,23 @@ export default {
 }
 #river p {
   text-align: left;
-  width: 60%;
+  max-width: 1700px;
 }
-.noPrint{
-  display: none;
+
+@media print {
+  .noPrint{
+    display: none;
+  }
+    /* td,th,.el-table--border th, .el-table__body-wrapper .el-table--border.is-scrolling-left~.el-table__fixed{ */
+    th,td,td:nth-last-of-type(1),th:nth-last-of-type(2){
+    border-right:1px solid #000;
+    border-left:1px solid #000;
+    border-top:1px solid #000; 
+  }
+  .el-table{
+    /* border-right: 1px solid #000; */
+    max-width: 1754px;
+    border-bottom: 1px solid #000 !important;
+  }
 }
 </style>
