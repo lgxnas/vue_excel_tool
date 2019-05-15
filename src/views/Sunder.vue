@@ -1,12 +1,23 @@
 <template>
   <div>
+        <el-container >
+      <el-aside width="130px" class="noPrint">
+        <Aside_lgx/>
+      </el-aside>
+
+    <el-container>
+    <el-main>
     <Header :title="title" :dw="dw" :dspy="dspy"/>
     <Eltable :ths="ths" :tableData="dxs"/>
+     </el-main>
+    </el-container>
+    </el-container>
   </div>
 </template>
 <script>
 import Header from "../components/Header";
 import Eltable from "../components/Eltable";
+import Aside_lgx from "../components/Aside.vue"
 export default {
   data() {
     const dxs = [
@@ -282,6 +293,6 @@ export default {
       ]
     };
   },
-  components: { Header, Eltable }
+  components: { Header, Eltable,Aside_lgx }
 };
 </script>

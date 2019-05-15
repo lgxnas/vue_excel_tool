@@ -1,6 +1,14 @@
 <template>
-	<div>
+	<div id="home">
+		    <el-container >
+      <el-aside width="130px" class="noPrint">
+        <Aside_lgx/>
+      </el-aside>
+
+    <el-container>
+    <el-main>
 		<Header :title="title" :dspy="dspy" />
+		<div id="home_content">
 		<ol>
 		<h2>已完成内容</h2>
 		<h3><li>地下水评价</li></h3>
@@ -11,11 +19,16 @@
 		</b></p>
 		<li><!-- 地下 --></li>
 		</ol>
+		</div>
+	</el-main>
+    </el-container>
+    </el-container>
 	</div>
 </template>
 
 <script>
 	import Header from "../components/Header";
+	import Aside_lgx from "../components/Aside.vue"
 	export default {
 		name: "Home",
 		data() {
@@ -27,7 +40,9 @@
 			};
 		},
 		components: {
-			Header
+			Header,
+			Aside_lgx
+			
 		}
 		// props: {
 		//   msg: String
@@ -37,7 +52,7 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-	*{
+	#home_content{
 		text-align: left;
 	}
 </style>

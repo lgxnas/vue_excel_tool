@@ -2,8 +2,7 @@
   <el-row>
     <el-col >{{title}}</el-col>
     <el-col >{{dw}}</el-col>
-    <el-col class="noPrint">
-    <!-- :class="dspy"> -->
+    <el-col class="noPrint" :style="dspy">
       <el-upload
         ref="upload"
         action="/"

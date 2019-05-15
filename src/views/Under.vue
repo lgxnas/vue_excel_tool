@@ -1,8 +1,12 @@
 <template>
   <div>
-          <!-- <el-aside width="130px">
+    <el-container >
+      <el-aside width="130px" class="noPrint">
         <Aside_lgx/>
-      </el-aside> -->
+      </el-aside>
+
+    <el-container>
+    <el-main>
     <Header :title="title" :dw="dw" @transferJson="getJson"/>
     <!-- {{dxsjson}} -->
     <el-table :data="result" style="width: 100%" border stripe>
@@ -17,10 +21,14 @@
         <el-table-column prop="des" label="超标项目（达到类别，超标倍数）" header-align="center"></el-table-column>
       </el-table-column>
     </el-table>
+        </el-main>
+    </el-container>
+    </el-container>
   </div>
 </template>
 <script>
 import Header from "../components/Header";
+import Aside_lgx from "../components/Aside.vue"
 import { analyse_dxs } from "../lgxjs/lgx.js";
 export default {
   data() {
@@ -31,7 +39,7 @@ export default {
       dw: "单位:总大肠菌群:MPN/100mL、水温:℃、pH:无量纲、其它:mg/L"
     };
   },
-  components: { Header },
+  components: { Header,Aside_lgx },
   methods: {
     getJson(msg) {
       // this.dxsjson = msg;

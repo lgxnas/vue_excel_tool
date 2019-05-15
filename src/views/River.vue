@@ -9,19 +9,33 @@
     <el-main>
     <Header :title="title" :dw="dw" @transferJson="getJson"/>
     <el-row class="noPrint">
-      <el-col :span="2">
+      <el-col :span="3">
         <el-button
           icon="el-icon-s-data"
           size="small"
           type="primary"
-          style="margin:20px;"
+          style="margin:10px;"
           @click="showFour"
         >{{showButton?'显示常规四项':'显示全部项目'}}</el-button>
       </el-col>
-      <!-- <el-col :span="2">
-        <el-button size="mini" type="primary" @click="printContent" style="margin:20px;">打印</el-button>
-      </el-col> -->
+      <el-col :span="4">
+        <!-- <el-select
+    multiple
+    collapse-tags
+    style="margin: 10px;"
+    placeholder="请选择"
+    size="small"
+    >
+    <el-option
+      v-for="item in options"
+      :key="item.value"
+      :label="item.label"
+      :value="item.value">
+    </el-option>
+  </el-select> -->
+      </el-col>
     </el-row>
+    <div id="tbRiver">
     <el-table :data="dm" border stripe @cell-dblclick="dbck" :span-method="objectSpanMethod">
       <template v-for="(th,index) in ths">
         <el-table-column
@@ -32,6 +46,7 @@
           :width="index<ths.length-2?'65':'200'"
         >
           <template slot-scope="scope">
+            <div class="isEdit"> {{scope.row[th.prop]}}</div>
             <el-input
               type="textarea"
               @focus="onfocus"
@@ -40,11 +55,13 @@
               size="mini"
               autosize
               :disabled="scope.$index%3!=2?inputDisable:true"
+              style="display:none;"
             ></el-input>
           </template>
         </el-table-column>
       </template>
     </el-table>
+    </div>
     <p>{{bz}}</p>
     </el-main>
     </el-container>
@@ -56,7 +73,7 @@
 import Aside_lgx from "../components/Aside.vue"
 import Header from "../components/Header";
 import { constants } from "crypto";
-import { checkdbsValue, _average,_toFixed } from "../lgxjs/lgx";
+import { checkdbsValue, _average} from "../lgxjs/lgx";
 import { isString } from "util";
 export default {
   data() {
@@ -116,7 +133,7 @@ export default {
         }
       ],
       //tableData
-      filterArr: [
+      filterArr0: [
         "水温",
         "PH",
         "溶解氧",
@@ -142,6 +159,7 @@ export default {
         "硫化物",
         "粪大肠菌群"
       ],
+      filterArr:[],
       showButton: true,
       dm: [
         {
@@ -368,22 +386,12 @@ export default {
         }
       ],
       dataCate: {},
-      noPrint:""
+      isEdit:false
+      // noPrint:""
     };
   },
   methods: {
     showFour() {
-      // let tmpArr=this.ths;
-      // console.log(tmpArr)
-      // let four=["PH","氨氮","总磷","化学需氧量"]
-      // for (let i=tmpArr.length-5;i>6;i--){
-      //   if(four.indexOf(tmpArr[i].prop)==-1){
-      //     // console.log(this.ths[i].prop,four.indexOf(this.ths[i].prop))
-      //     tmpArr.splice(i,1)
-      //   }
-      // }
-      // this.ths=tmpArr
-      // console.log(tmpArr)
       this.showButton = !this.showButton;
       if (!this.showButton) {
         this.filterArr = ["PH", "氨氮", "总磷", "化学需氧量"];
@@ -421,8 +429,6 @@ export default {
       // console.log(typeof(this.dm[index][p]));//string
       // this.reSetData(index, p); //Debug
       let value = this.dm[index][p];
-      // console.log(value,typeof(value));//string
-      // console.log((0.15)._toFixed(1),(0.25)._toFixed(1),(0.35)._toFixed(1),(0.45)._toFixed(1),(0.55)._toFixed(1),(0.65)._toFixed(1),(0.75)._toFixed(1))
       if (!value || value == "0") {
         this.dm[index][p] = "-1";
         // console.log(this.dm[index][p])
@@ -468,6 +474,7 @@ export default {
     dbck(row, column, cell, event) {
       //双击事件
       console.log(row, column, cell, event);
+      cell.children[0].children[1].style.display="block"
     },
     getJson(msg) {
       this.dm = msg;
@@ -682,6 +689,9 @@ export default {
       // return this.ths0.filter(value=>value.prop!="PH")
       return arr;
     }
+  },
+  mounted:function(){
+    this.filterArr=this.filterArr0
   }
 };
 </script>
@@ -690,7 +700,7 @@ export default {
 .el-table thead {
   color: #000000;
 }
-#river .el-textarea__inner {
+#river #tbRiver .el-textarea__inner {
   border: none;
   background: none;
   /* height: auto; */
@@ -701,7 +711,7 @@ export default {
   overflow: hidden;
   word-break: break-all;
 }
-#river .el-textarea__inner:focus {
+#river #tbRiver .el-textarea__inner:focus {
   background-color: rgba(255, 159, 243, 0.2);
   border: 1px dashed #cccccc;
 }
@@ -709,7 +719,9 @@ export default {
   text-align: left;
   max-width: 1700px;
 }
-
+.isEdit{
+  display:"";
+}
 @media print {
   .noPrint{
     display: none;

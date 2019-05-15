@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <el-container>
+    <!-- <el-container> -->
       <!-- <el-aside> -->
               <!-- <el-aside width="130px">
         <Aside_lgx/>
@@ -12,24 +12,25 @@
         </el-main>
         <!-- <el-footer height="40px">Footer</el-footer> -->
       </el-container>
-    </el-container>
+    <!-- </el-container> -->
   </div>
 </template>
 
 <script>
-import Aside_lgx from "./components/Aside.vue"
+// import Aside_lgx from "./components/Aside.vue"
 
 export default {
   name: "app",
   components: {
-    Aside_lgx
+    // Aside_lgx
   }
 };
 </script>
 
 <style>
 #app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
+  /* font-family: "Avenir", Helvetica, Arial, sans-serif; */
+  font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
