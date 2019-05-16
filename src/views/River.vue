@@ -27,12 +27,12 @@
     size="small"
     >
     <el-option
-      v-for="item in options"
-      :key="item.value"
+      v-for="item in thsAll"
+      :key="item.prop"
       :label="item.label"
-      :value="item.value">
-    </el-option>
-  </el-select> -->
+      :value="item.prop">
+    </el-option> -->
+  <!-- </el-select> -->
       </el-col>
     </el-row>
     <div id="tbRiver">
@@ -43,10 +43,13 @@
           :label="th.label"
           :key="index"
           align="center"
-          :width="index<ths.length-2?'65':'200'"
+          :width="index>ths.length-3?'200':'66'"
         >
+        <!-- :width="index>ths.length-3?'200':'65'" -->
+        <!-- && index>3?'50':'65'&& th.label=='汞'?'53':'50' -->
           <template slot-scope="scope">
-            <div class="isEdit"> {{scope.row[th.prop]}}</div>
+            <div> {{scope.row[th.prop]}}</div> 
+            <!-- :style="!isEdit?'display:block;':'display:none;'" onFoucs="style='display:none;'"-->
             <el-input
               type="textarea"
               @focus="onfocus"
@@ -54,9 +57,10 @@
               @blur="update(scope.$index,th.prop)"
               size="mini"
               autosize
-              :disabled="scope.$index%3!=2?inputDisable:true"
+             :disabled="scope.$index%3!=2?inputDisable:true"
               style="display:none;"
             ></el-input>
+             <!--  -->
           </template>
         </el-table-column>
       </template>
@@ -132,6 +136,7 @@ export default {
           label: "单独评价指标（粪大肠菌群）超标情况(类别，超标倍数）"
         }
       ],
+      // thsAll:[],
       //tableData
       filterArr0: [
         "水温",
@@ -386,7 +391,8 @@ export default {
         }
       ],
       dataCate: {},
-      isEdit:false
+      // isEdit:false,
+      tcell:{}
       // noPrint:""
     };
   },
@@ -394,48 +400,27 @@ export default {
     showFour() {
       this.showButton = !this.showButton;
       if (!this.showButton) {
-        this.filterArr = ["PH", "氨氮", "总磷", "化学需氧量"];
+        this.filterArr = ["高锰酸盐指数", "氨氮", "总磷", "化学需氧量"];
       } else {
-        this.filterArr = [
-          "水温",
-          "PH",
-          "溶解氧",
-          "高锰酸盐指数",
-          "五日生化需氧量",
-          "氨氮",
-          "化学需氧量",
-          "挥发酚",
-          "氰化物",
-          "砷",
-          "汞",
-          "六价铬",
-          "铅",
-          "镉",
-          "石油类",
-          "总磷",
-          "总氮",
-          "铜",
-          "锌",
-          "氟化物",
-          "硒",
-          "阴离子表面活性剂",
-          "硫化物",
-          "粪大肠菌群"
-        ];
+        this.filterArr = this.filterArr0
       }
     },
     update(index, p) {
       //失去焦点
       // console.log(typeof(this.dm[index][p]));//string
       // this.reSetData(index, p); //Debug
+      // this.isEdit=false
+      this.tcell.children[0].children[1].style.display="none" 
+      this.tcell.children[0].children[0].style.display="block" 
       let value = this.dm[index][p];
-      if (!value || value == "0") {
-        this.dm[index][p] = "-1";
-        // console.log(this.dm[index][p])
-      } else {
-        if (this.dm[index][p].toString().replace(/\s/g, "").length == 0) {
+      // if (!value || value == "0") {
+      //   this.dm[index][p] = "-1";
+      //   // console.log(this.dm[index][p])
+      // } else {
+        if (!value || value == "0"||this.dm[index][p].toString().replace(/\s/g, "").length == 0) {
           this.dm[index][p] = "-1";
-        } else {
+        } 
+        // else {
           //正常修改
           let tmpDes = checkdbsValue(p, this.dm[index][p]);
           // console.log("1tmpDes:", tmpDes);
@@ -465,8 +450,8 @@ export default {
             }
           }
           // this.bz =tmpDes.key + "类别：" + tmpDes.level + "超标倍数" + tmpDes.bs; //Debug
-        }
-      }
+        // }
+      // }
     },
     onfocus(e) {
       e.currentTarget.select(); //全选 文字
@@ -474,11 +459,17 @@ export default {
     dbck(row, column, cell, event) {
       //双击事件
       console.log(row, column, cell, event);
-      cell.children[0].children[1].style.display="block"
+      // this.isEdit=true
+      // cell.children[0].children[0].style.display="none"
+      this.tcell=cell
+      console.log(this.tcell)
+      cell.children[0].children[0].style.display="none" 
+      cell.children[0].children[1].style.display="block" 
+      cell.children[0].children[1].children[0].focus() //input 焦点
     },
     getJson(msg) {
       this.dm = msg;
-      this.inputDisable = true;
+      // this.inputDisable = true;
       const dmxm = this.filterArr;
       for (let i = 0; i < msg.length; i += 3) {
         // if(i%3!=2){ //不为均值行
@@ -688,6 +679,13 @@ export default {
       arr.push(...this.thspj);
       // return this.ths0.filter(value=>value.prop!="PH")
       return arr;
+    },
+    thsAll:function(){
+      let arr=[]
+      arr.push(...this.ths0)
+      arr.push(...this.thsxm)
+      arr.push(...this.thspj)
+      return arr
     }
   },
   mounted:function(){
@@ -710,18 +708,21 @@ export default {
   resize: none;
   overflow: hidden;
   word-break: break-all;
+  /* display: none; */
 }
 #river #tbRiver .el-textarea__inner:focus {
   background-color: rgba(255, 159, 243, 0.2);
   border: 1px dashed #cccccc;
+  /* display: inline !important; */
 }
+/* div .isEdit{
+  display: none;
+} */
 #river p {
   text-align: left;
   max-width: 1700px;
 }
-.isEdit{
-  display:"";
-}
+
 @media print {
   .noPrint{
     display: none;
@@ -734,8 +735,13 @@ export default {
   }
   .el-table{
     /* border-right: 1px solid #000; */
-    max-width: 1754px;
+    max-width: 1238px;
     border-bottom: 1px solid #000 !important;
   }
+  /* html,body{
+    max-width: 1250px;
+    margin: 0;
+    padding: 0;
+  } */
 }
 </style>
