@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="under">
     <el-container >
       <el-aside width="130px" class="noPrint">
         <Aside_lgx/>
@@ -7,7 +7,12 @@
 
     <el-container>
     <el-main>
-    <Header :title="title" :dw="dw" @transferJson="getJson"/>
+    <Header :title="title" :dw="dw" @transferJson="getJson" url="https://gitee.com/suplxc/vue_excel_tool/raw/djpad/xlsx/地下水模版.xlsx"/>
+    <el-row style="text-align:left;color:red;font-weight: bold;">
+    <!-- <span style="text-align:left;width:100%;"> -->
+          未加入pH分析，3类水标准：6.5-8.5
+      <!-- </span> -->
+    </el-row>
     <!-- {{dxsjson}} -->
     <el-table :data="result" style="width: 100%" border stripe>
       <el-table-column type="index" align="center"></el-table-column>
@@ -52,3 +57,6 @@ export default {
   }
 };
 </script>
+<style>
+
+</style>

@@ -7,7 +7,7 @@
 
     <el-container>
     <el-main>
-    <Header :title="title" :dw="dw" @transferJson="getJson"/>
+    <Header :title="title" :dw="dw" @transferJson="getJson" url="https://gitee.com/suplxc/vue_excel_tool/raw/djpad/xlsx/河流断面模版.xlsx"/>
     <el-row class="noPrint">
       <el-col :span="3">
         <el-button
@@ -36,7 +36,8 @@
       </el-col>
     </el-row>
     <div id="tbRiver">
-    <el-table :data="dm" border stripe @cell-dblclick="dbck" :span-method="objectSpanMethod">
+<el-table :data="dm" border stripe @cell-dblclick="dbck" :span-method="objectSpanMethod">
+          <!-- <el-table-column type="index"></el-table-column> -->
       <template v-for="(th,index) in ths">
         <el-table-column
           :prop="th.prop"
@@ -397,6 +398,7 @@ export default {
     };
   },
   methods: {
+ 
     showFour() {
       this.showButton = !this.showButton;
       if (!this.showButton) {

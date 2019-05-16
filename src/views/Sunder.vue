@@ -21,6 +21,7 @@ import Aside_lgx from "../components/Aside.vue"
 export default {
   data() {
     const dxs = [
+      {name:"pH","1":"6.5-8.5","2":"6.5-8.5","3":"6.5-8.5","4":"5.5-6.5,8.5-9.0","5":"<5.5,>9.0"},
       {
         name: "总硬度",
         "1": "150",

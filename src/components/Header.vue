@@ -1,8 +1,11 @@
 <template>
+<div id="header_lgx">
   <el-row>
     <el-col >{{title}}</el-col>
     <el-col >{{dw}}</el-col>
-    <el-col class="noPrint" :style="dspy">
+  </el-row> 
+<el-row>
+  <el-col class="noPrint" :style="dspy">
       <el-upload
         ref="upload"
         action="/"
@@ -10,10 +13,13 @@
         :on-change="readExcel"
         :auto-upload="false"
       >
-        <el-button slot="trigger" icon="el-icon-upload" size="small" type="primary">导入excel</el-button>
+        <el-button slot="trigger" icon="el-icon-upload" size="small" type="primary" style="margin:10px;">导入excel</el-button>
+       <a :href="url">           
+      <el-button icon="el-icon-download" size="small" type="primary" style="margin:10px;">下载模版</el-button></a>
       </el-upload>
     </el-col>
   </el-row>
+</div>
 </template>
 <script>
 import XLSX from "xlsx";
@@ -52,7 +58,7 @@ export default {
       fileReader.readAsBinaryString(file.raw);
     }
   },
-  props: ["title", "dw", "dspy"]
+  props: ["title", "dw", "dspy","url"]
 };
 </script>
 
