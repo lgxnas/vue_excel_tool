@@ -1,18 +1,18 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Ssurface from '../views/Ssurface.vue'
-import Sunder from '../views/Sunder.vue'
-import Surface from '../views/Surface.vue'
-import Under from '../views/Under.vue'
-import Home from '../views/Home.vue'
-import River from '../views/River.vue'
+// import Sunder from '../views/Sunder.vue'
+// import Surface from '../views/Surface.vue'
+// import Under from '../views/Under.vue'
+// import Home from '../views/Home.vue'
+
 
 Vue.use(VueRouter)
 
 const routes = [{
     path: '/home',
     name: 'home',
-    component: Home
+    component: ()=>import('../views/Home.vue')
   }, {
     path: '/ssurface',
     name: 'ssurface',
@@ -21,22 +21,22 @@ const routes = [{
   {
     path: '/sunder',
     name: 'sunder',
-    component: Sunder
+    component: ()=>import('../views/Sunder.vue')
   },
   {
     path: '/surface',
     name: 'surface',
-    component: Surface
+    component: ()=>import('../views/Surface.vue')
   },
   {
     path: '/under',
     name: 'under',
-    component: Under
+    component: ()=>import('../views/Under.vue')
   },
   {
     path: '/r',
     name: 'river',
-    component: River
+    component: ()=>import('../views/River.vue')
   },
   {
     path: '/*',

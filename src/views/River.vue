@@ -460,11 +460,11 @@ export default {
     },
     dbck(row, column, cell, event) {
       //双击事件
-      console.log(row, column, cell, event);
+      // console.log(row, column, cell, event);
       // this.isEdit=true
       // cell.children[0].children[0].style.display="none"
       this.tcell=cell
-      console.log(this.tcell)
+      // console.log(this.tcell)
       cell.children[0].children[0].style.display="none" 
       cell.children[0].children[1].style.display="block" 
       cell.children[0].children[1].children[0].focus() //input 焦点
