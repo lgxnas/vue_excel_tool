@@ -21,4 +21,5 @@ yarn-error.log*
 *.sw?
 
 # My test file
-Sunder.1.vue
+Sunder.*.vue
+River.*.vue
