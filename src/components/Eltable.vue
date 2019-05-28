@@ -1,9 +1,9 @@
 <template>
   <div class="eltable">
-    <el-table :data="tableData" border stripe :height="clientHeight" size="mini">
+    <el-table :data="tableData" border stripe :height="clientHeight" size="mini" >
       <el-table-column type="index" align="center" ></el-table-column>
       <template v-for="(title,index) in ths">
-        <el-table-column :prop="title.prop" :label="title.label" :key="index" header-align="center"></el-table-column>
+        <el-table-column :prop="title.prop" :label="title.label" :key="index" header-align="center" width="110"></el-table-column>
       </template>
     </el-table>
   </div>
@@ -28,12 +28,13 @@ export default {
   padding: 2px !important;
   min-width: 0 !important;
 }
-.cell {
+.el-table .cell {
   font-size: 10px;
   line-height: 15px !important;
   padding: 0 !important;
   /* text-align: center; */
   min-width: 0 !important;
+  color: black;
 }
 .eltable {
   margin: 5px;

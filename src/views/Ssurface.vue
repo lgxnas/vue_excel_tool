@@ -1,12 +1,24 @@
 <template>
   <div>
-    <Header :title="title" :dw="dw"/>
+    		    <el-container >
+      <el-aside width="130px" class="noPrint">
+        <Aside_lgx/>
+      </el-aside>
+
+    <el-container>
+    <el-main>
+    <Header :title="title" :dw="dw" :dspy="dspy"/>
+
     <Eltable :ths="ths" :tableData="dbs" />
+    </el-main>
+    </el-container>
+    </el-container>
   </div>
 </template>
 <script>
 import Header from "../components/Header";
 import Eltable from "../components/Eltable";
+import Aside_lgx from "../components/Aside.vue"
 export default {
   data() {
     const dbs = [
@@ -162,8 +174,9 @@ export default {
     return {    
       title: "地表水标准 (GB3838-2002)",
       // tableData,
-      dw:"单位:mg/L",
+      dw:'单位:粪大肠菌群:个/L、水温:℃、pH:无量纲、其它:mg/L',
       dbs,
+      dspy:{display:'none'},
       ths: [
         { prop: "name", label: "名称" },
         { prop: "1", label: "一类" },
@@ -174,9 +187,11 @@ export default {
       ]
     };
   },
-  components: { Header, Eltable }
+  components: { Header, Eltable,Aside_lgx }
 };
 </script>
+
+
 
 
 

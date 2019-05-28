@@ -1,15 +1,27 @@
 <template>
   <div>
-    <Header :title="title" :dw="dw"/>
+        <el-container >
+      <el-aside width="130px" class="noPrint">
+        <Aside_lgx/>
+      </el-aside>
+
+    <el-container>
+    <el-main>
+    <Header :title="title" :dw="dw" :dspy="dspy"/>
     <Eltable :ths="ths" :tableData="dxs"/>
+     </el-main>
+    </el-container>
+    </el-container>
   </div>
 </template>
 <script>
 import Header from "../components/Header";
 import Eltable from "../components/Eltable";
+import Aside_lgx from "../components/Aside.vue"
 export default {
   data() {
     const dxs = [
+      {name:"pH","1":"6.5-8.5","2":"6.5-8.5","3":"6.5-8.5","4":"5.5-6.5,8.5-9.0","5":"<5.5,>9.0"},
       {
         name: "总硬度",
         "1": "150",
@@ -269,8 +281,9 @@ export default {
     return {
       title: "地下水标准 (GB/T14848-2017)",
       // tableData,
-      dw: "单位:mg/L",
+      dw: "单位:总大肠菌群:MPN/100mL、水温:℃、pH:无量纲、其它:mg/L",
       dxs,
+      dspy:{display:'none'},
       ths: [
         { prop: "name", label: "名称" },
         { prop: "1", label: "一类" },
@@ -281,6 +294,6 @@ export default {
       ]
     };
   },
-  components: { Header, Eltable }
+  components: { Header, Eltable,Aside_lgx }
 };
 </script>

@@ -1,6 +1,7 @@
 .DS_Store
 node_modules
-/dist
+#/dist/fonts/*.woff
+/dist/js/*.map
 
 # local env files
 .env.local
